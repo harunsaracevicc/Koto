@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FadeIn from '../components/FadeIn';
 import { MENU_ITEMS, GALLERY_ITEMS } from '../constants';
@@ -11,9 +11,61 @@ import { formatPrice } from '../utils';
 const Home: React.FC = () => {
   const navigate = useNavigate();
   const { t, language } = useLanguage();
-
   const signatureDishes = [MENU_ITEMS[6], MENU_ITEMS[7], MENU_ITEMS[8]];
   const galleryPreview = GALLERY_ITEMS.slice(0, 17);
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+
+  // Mobile Gallery State
+  const [galleryIndex, setGalleryIndex] = useState(0);
+  const [galleryFade, setGalleryFade] = useState(true);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const handleTouchEnd = () => {
+    if (!touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > 50;
+    const isRightSwipe = distance < -50;
+
+    if (isLeftSwipe) {
+      setCurrentSlide((prev) => (prev + 1) % signatureDishes.length);
+    }
+    if (isRightSwipe) {
+      setCurrentSlide((prev) => (prev - 1 + signatureDishes.length) % signatureDishes.length);
+    }
+
+    setTouchEnd(null);
+    setTouchStart(null);
+  };
+
+  // Signature Dishes Slider
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % signatureDishes.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [signatureDishes.length]);
+
+  // Mobile Gallery Rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setGalleryFade(false);
+      setTimeout(() => {
+        setGalleryIndex((prev) => (prev + 4) % GALLERY_ITEMS.length);
+        setGalleryFade(true);
+      }, 500); // Wait for fade out
+    }, 4000); // Change every 4 seconds
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="w-full">
@@ -126,7 +178,7 @@ const Home: React.FC = () => {
                   <div className="flex flex-col gap-4 mt-12">
                     <div className="w-full aspect-[4/5] overflow-hidden rounded border border-white/5 hover:border-gold-300/30 transition-colors duration-700">
                       <img
-                        src={ASSETS.PHILOSOPHY.VEGETABLES}
+                        src={ASSETS.PHILOSOPHY.INTERIOR}
                         alt="Fresh vegetables on a cutting board"
                         className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                       />
@@ -161,7 +213,54 @@ const Home: React.FC = () => {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+          {/* Mobile Slider */}
+          <div
+            className="md:hidden relative w-full overflow-hidden"
+            onTouchStart={handleTouchStart}
+            onTouchMove={handleTouchMove}
+            onTouchEnd={handleTouchEnd}
+          >
+            <div
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+            >
+              {signatureDishes.map((dish) => (
+                <div key={dish.id} className="w-full flex-shrink-0 px-4">
+                  <div className="flex flex-col gap-6 relative group" role="article" aria-label={dish.name[language]}>
+                    <div className="overflow-hidden relative border border-white/5 bg-black-card">
+                      <img
+                        src={dish.image}
+                        alt={dish.name[language]}
+                        className="w-full aspect-[3/4] object-cover"
+                      />
+                      <div className="absolute inset-0 border border-white/10 m-2 pointer-events-none" aria-hidden="true"></div>
+                    </div>
+                    <div className="text-center">
+                      <h3 className="text-white text-2xl font-serif mb-2">{dish.name[language]}</h3>
+                      <div className="w-12 h-px bg-white/10 mx-auto my-3" aria-hidden="true"></div>
+                      <p className="text-white/50 text-sm leading-relaxed mb-3 line-clamp-2">{dish.description[language]}</p>
+                      <span className="text-gold-300 font-bold font-serif text-xl">{formatPrice(dish.price, language)}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            {/* Indicators */}
+            <div className="flex justify-center gap-2 mt-6">
+              {signatureDishes.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentSlide(index)}
+                  className={`w-2 h-2 rounded-full transition-all duration-300 ${currentSlide === index ? 'bg-gold-300 w-6' : 'bg-white/20'
+                    }`}
+                  aria-label={`Go to slide ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid */}
+          <div className="hidden md:grid md:grid-cols-3 gap-10">
             {signatureDishes.map((dish, index) => (
               <FadeIn key={dish.id} delay={index * 0.2} className="group cursor-pointer">
                 <div className="flex flex-col gap-6 relative" role="article" aria-label={dish.name[language]}>
@@ -206,7 +305,8 @@ const Home: React.FC = () => {
             </div>
           </FadeIn>
 
-          <div className="grid grid-cols-2 md:grid-cols-6 gap-2 h-auto md:h-[600px]">
+          {/* Desktop Gallery Grid */}
+          <div className="hidden md:grid md:grid-cols-6 gap-2 h-[600px]">
             {galleryPreview.map((item, index) => (
               <FadeIn
                 key={item.id}
@@ -223,6 +323,25 @@ const Home: React.FC = () => {
                 <div className="absolute inset-0 border-[1px] border-transparent group-hover:border-gold-300/40 m-2 transition-all duration-500 pointer-events-none" aria-hidden="true"></div>
               </FadeIn>
             ))}
+          </div>
+
+          {/* Mobile Gallery Grid (Animated) */}
+          <div
+            className="md:hidden grid grid-cols-2 gap-2 h-auto transition-opacity duration-500 ease-in-out"
+            style={{ opacity: galleryFade ? 1 : 0 }}
+          >
+            {[0, 1, 2, 3].map((offset) => {
+              const item = GALLERY_ITEMS[(galleryIndex + offset) % GALLERY_ITEMS.length];
+              return (
+                <div key={item.id || offset} className="relative aspect-square overflow-hidden rounded-sm border border-white/10">
+                  <img
+                    src={item.image}
+                    alt={item.alt[language]}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex justify-center mt-8 md:hidden">

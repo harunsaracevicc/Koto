@@ -36,8 +36,8 @@ export const ASSETS = {
 
   // Philosophy Section
   PHILOSOPHY: {
-    VEGETABLES: "https://lh3.googleusercontent.com/aida-public/AB6AXuCGB3D5UMSZYiTPibNYmDbHzl3OHpKOhnE_Z8I-sqHCoelWvy9O-lZQs2qsxhnP9oAZxV6BB2e9hBm9uIj1dmpwPW0C0DXi_7bV7nFJClPCVc7x-jwNq6e-frWp-DSxff2sCJgiYXqRdX6plYSLaDlUUh5jAX9q5856v65yZnevgzyF8XX8fN72ldbIQ5K57wbDJbekEr21QQ1c_vzAztXjTLpRs8cBA6CQET7TMdOty4t-MonPy-KaqlzdsxijdWx3NL4ln42c-Zyj",
-    INTERIOR: "https://lh3.googleusercontent.com/aida-public/AB6AXuAvXVjWRUtkjCtJ5isJQ3FHkavRx_rKH_BKS-rIZx28dC_VFKQVNQiVjsnW0wprDo6TqdAfoNPMq4vvKl9j_aapKSdZ9rBlAuKccB5u4uEPOMkVy25-bMN5bbsIMDU9AUJR0bz_v45g9BrPABp3dhZ_wVW6BmhytaMJeoWdctUTYhzDAp1IBNo4mgZC0alujbeCkVYeQAqwe3tRNhQwxqvx-Icdhz9epWVxjAsh1vMOtLcrIjmSmEMPZgSHOo3r0Qz5vXxWAvyTPZpj"
+    INTERIOR: KotoImage10,
+    INTERIOR2: KotoImage11
   },
 
   // Menu Items
