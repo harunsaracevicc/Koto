@@ -78,10 +78,21 @@ export const MENU_ITEMS: MenuItem[] = [
 ];
 
 export const GALLERY_ITEMS: GalleryItem[] = [
-  { id: 1, alt: { en: "Dining Room", bs: "Sala za Ručavanje" }, size: 'large', image: ASSETS.GALLERY.DINING_ROOM },
-  { id: 2, alt: { en: "Plating", bs: "Serviranje" }, size: 'wide', image: ASSETS.GALLERY.PLATING },
-  { id: 3, alt: { en: "Cocktail", bs: "Koktel" }, size: 'normal', image: ASSETS.GALLERY.COCKTAIL },
-  { id: 4, alt: { en: "Guests", bs: "Gosti" }, size: 'normal', image: ASSETS.GALLERY.GUESTS },
-  { id: 5, alt: { en: "Steak", bs: "Odrezak" }, size: 'tall', image: ASSETS.GALLERY.STEAK },
-  { id: 6, alt: { en: "Salad", bs: "Salata" }, size: 'normal', image: ASSETS.GALLERY.SALAD },
+  { id: 1, alt: { en: "-", bs: "-" }, size: 'wide', image: ASSETS.GALLERY.KOTO2 },
+  { id: 2, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO1 },
+  { id: 3, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO3 },
+  { id: 4, alt: { en: "-", bs: "-" }, size: 'wide', image: ASSETS.GALLERY.KOTO4 },
+  { id: 5, alt: { en: "-", bs: "-" }, size: 'tall', image: ASSETS.GALLERY.KOTO5 },
+  { id: 6, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO6 },
+  { id: 7, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO7 },
+  { id: 8, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO8 },
+  { id: 9, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO9 },
+  { id: 10, alt: { en: "-", bs: "-" }, size: 'wide', image: ASSETS.GALLERY.KOTO10 },
+  { id: 11, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO11 },
+  { id: 12, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO12 },
+  { id: 13, alt: { en: "-", bs: "-" }, size: 'wide', image: ASSETS.GALLERY.KOTO13 },
+  { id: 14, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO14 },
+  { id: 15, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO15 },
+  { id: 16, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO16 },
+  { id: 17, alt: { en: "-", bs: "-" }, size: 'normal', image: ASSETS.GALLERY.KOTO17 },
 ];

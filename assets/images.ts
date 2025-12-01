@@ -1,7 +1,23 @@
 
 // Centralized image assets
 // In a local environment, you could change these strings to imports like: import MyImage from './filename.png';
-
+const KotoImage1 = "/assets/images/image1.JPG";
+const KotoImage2 = "/assets/images/image2.JPG";
+const KotoImage3 = "/assets/images/image3.JPG";
+const KotoImage4 = "/assets/images/image4.JPG";
+const KotoImage5 = "/assets/images/image5.JPG";
+const KotoImage6 = "/assets/images/image6.JPG";
+const KotoImage7 = "/assets/images/image7.JPG";
+const KotoImage8 = "/assets/images/image8.JPG";
+const KotoImage9 = "/assets/images/image9.JPG";
+const KotoImage10 = "/assets/images/image10.JPG";
+const KotoImage11 = "/assets/images/image11.JPG";
+const KotoImage12 = "/assets/images/image12.JPG";
+const KotoImage13 = "/assets/images/image13.JPG";
+const KotoImage14 = "/assets/images/image14.JPG";
+const KotoImage15 = "/assets/images/image15.JPG";
+const KotoImage16 = "/assets/images/image16.JPG";
+const KotoImage17 = "/assets/images/image17.JPG";
 export const ASSETS = {
   // UI Elements
   FLAGS: {
@@ -39,12 +55,24 @@ export const ASSETS = {
 
   // Gallery
   GALLERY: {
-    DINING_ROOM: "https://lh3.googleusercontent.com/aida-public/AB6AXuDqnh6Maq5prPO0SASkiz4vGTkuzKn372gWFiMLKp_nbUwzRf2JVwFHD_XPA_Ges5Qk7e5kY7InmIHKHMvVxV8lweMxvdpnlxcxWiI7Jt3FlhFvOgyC6Rvkg5VK1IY7URYUr_X_lkUjwWdQG3iE839PBJMKZFL6RDGp7z1_3XLE5xVuijz23j4zqd88TJIFJxyKaA0-lTnls7YN5NuRsJaN8fNttQ-SOu7vfYuil0I9r7CV60unKwj7tcMrF7ZMYZZJQgLv0-gh2hzG",
-    PLATING: "https://lh3.googleusercontent.com/aida-public/AB6AXuBqvAJWmMhn6dpLe3_Bi-JB67dwozZDWOn-_ePXzFkclsAt68_SVevBbxTPzRJdJo9FV5P66O8e-FMHsSrY0LasP3HjK4XY7ctRoB3_vrteQK86pCFPV-u6Ba_Ew6oZWL0f-bSalQCca0vixml9ppw9it6sfEMTk7G47DzZHQGXu9wK9FY0yjzeO7moNchZyXtknTcs3tjgs0iaX0VEICd-XmNmF7CY3dDoSVAuQReqCAmqvu0IYgYBIikjt-cikFjI0pwMn7PbvICM",
-    COCKTAIL: "https://lh3.googleusercontent.com/aida-public/AB6AXuCapFPUHTaAJ-65T1-8F99H03qNtxIlFcnOGM81bimS_1EGPaaAeNC7tiodSgMfa929_61Gguez9p_5U7Y4dkSJVLcrqHq2p-Z9Y_5DtVFlBTwTqeKOBXyqdULPmDoexI3hMzZaGaPRkTECQj-yZrVpZUYfyPpfcj39k4uLBTgHsKG-0fp6ND5XItXXiJnGYd2G8XY_sh2pWxHZxmUPhZtXOrHBCfrUQyKwFDNOUx8R-LuNIr0QxUSalMiIG2DnzSUel2OUjMTVMVke",
-    GUESTS: "https://lh3.googleusercontent.com/aida-public/AB6AXuAs5qyndkCiGWLGFfSzFbGJojSydr8BdH47br2ZXIYgbpXpugC8JcHmNmdhk43xjPDi9nGGByp8R7VPn6Mi7rGl6OOwkaVzD53zLK8huHyTQvoHuaem4tWowRqc2lDJJ5D5Ueu6moq0YRzwMCK09xD2UU5Aob-bu7elRkYxmHcYkXNSFLRkWx2aoO6ovQFYHoQqNTNoMcqxfFaAnK8W0s5bw8PZMSd4KVgp5gtupR1ZwlX6B0xWJUgLK-69A6HltXpcoy-5EB1hOqwi",
-    STEAK: "https://lh3.googleusercontent.com/aida-public/AB6AXuD1ZrHfQ3E0mVjD5g4TCkKc1qp0Na4C2d-lm5JM_p9eiK3fd1Jd6wF_sUoZ_Fnc5ViIGeJee10aezG0mBm4kuC0356EK5v5TLe_W_W7TMzziKqQWs7450K-qRbRZE0c7OgOdU0sLxITcWn0XJ88FLu2CyYzWtaq-idT34ddsdRh9lPPAXYHOQyLP5m8SvxVvVsyhqvQrYrnORfK6bGFq3E7JjrfkgPcEob-5yaBJuDhA8KXIXYM7NfIrw0iOii8xRQlfGd3JQf97W3H",
-    SALAD: "https://lh3.googleusercontent.com/aida-public/AB6AXuDRhgGNQzy6MbgxJvwHTutJLo0eObJTc8FlwtXSKhbSxpRSpRAvKQNScOLSKlxyrlRJ9A-zuyuI1kTF6qkcPVw6OjFiIRxgay7Dt_oylMZTdwQy1bG8Pfuhf0Yt8RcXoTYlL4DgpQIo9EV9uzrkk-3GJTbzxCKrqx8PStsApMHfz60o2313eABucsK_t8kgrXum2xfnrVvRTH8xVJsCHdkNIXn5cdq18M-MkaF1-Q9S5MwaZuoRT4caTyO8bSIxzrmDpXFRpsv8xMEm"
+    KOTO1: KotoImage1,
+    KOTO2: KotoImage2,
+    KOTO3: KotoImage3,
+    KOTO4: KotoImage4,
+    KOTO5: KotoImage5,
+    KOTO6: KotoImage6,
+    KOTO7: KotoImage7,
+    KOTO8: KotoImage8,
+    KOTO9: KotoImage9,
+    KOTO10: KotoImage10,
+    KOTO11: KotoImage11,
+    KOTO12: KotoImage12,
+    KOTO13: KotoImage13,
+    KOTO14: KotoImage14,
+    KOTO15: KotoImage15,
+    KOTO16: KotoImage16,
+    KOTO17: KotoImage17,
+
   },
 
   // Contact
