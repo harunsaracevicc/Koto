@@ -7,6 +7,8 @@ import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import { LanguageProvider } from './contexts/LanguageContext';
 
+import { Analytics } from '@vercel/analytics/react';
+
 const App: React.FC = () => {
   return (
     <LanguageProvider>
@@ -20,6 +22,7 @@ const App: React.FC = () => {
           </Routes>
         </Layout>
       </HashRouter>
+      <Analytics />
     </LanguageProvider>
   );
 };
