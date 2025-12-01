@@ -6,7 +6,7 @@ export const ASSETS = {
   // UI Elements
   FLAGS: {
     EN: "https://flagcdn.com/w80/gb.png",
-    BS: "https://flagcdn./w80/ba.png"
+    BS: "https://flagcdn.com/w80/ba.png"
   },
   TEXTURES: {
     STARDUST: "https://www.transparenttextures.com/patterns/stardust.png"
