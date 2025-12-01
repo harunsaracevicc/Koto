@@ -28,7 +28,7 @@ export const translations = {
       experienceTitle: "Experience Koto",
       viewGalleryBtn: "View Full Gallery",
       testimonial: "\"A dining experience that transcends the ordinary. The ambiance, the flavors, the service – everything is simply perfection.\"",
-      reviewSource: "Michelin Guide Review, 2025"
+      reviewSource: ""
     },
     menu: {
       subtitle: "Our Menu",
@@ -104,7 +104,7 @@ export const translations = {
       experienceTitle: "Doživite Koto",
       viewGalleryBtn: "Pogledajte Galeriju",
       testimonial: "\"Iskustvo koje nadilazi uobičajeno. Ambijent, okusi, usluga – sve je jednostavno savršenstvo.\"",
-      reviewSource: "Recenzija Michelin Vodiča, 2025"
+      reviewSource: ""
     },
     menu: {
       subtitle: "Naš Meni",
