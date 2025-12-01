@@ -24,7 +24,7 @@ const Gallery: React.FC = () => {
                     </div>
                 </FadeIn>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]">
+                <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-[300px]">
                     {GALLERY_ITEMS.map((item, index) => (
                         <FadeIn
                             key={item.id}
