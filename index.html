@@ -1,108 +1,121 @@
-
 <!DOCTYPE html>
 <html lang="en" class="dark">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Koto Restaurant</title>
-    <meta name="description" content="Experience the soul of Bosnian cuisine with a modern twist at Koto Restaurant in Sarajevo." />
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Work+Sans:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
-    />
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            colors: {
-              primary: "#D4AF37",
-              "gold-100": "#F9F1D0",
-              "gold-200": "#E6D08A",
-              "gold-300": "#D4AF37", 
-              "gold-400": "#AA8C2C",
-              "gold-500": "#80661A",
-              "black-rich": "#050505",
-              "black-surface": "#0F0F0F",
-              "black-card": "#161616",
-              "black-lighter": "#242424",
-            },
-            fontFamily: {
-              sans: ["Work Sans", "sans-serif"],
-              serif: ["Playfair Display", "serif"],
-            },
-            backgroundImage: {
-              'luxury-gradient': 'linear-gradient(to bottom right, #0F0F0F, #050505)',
-            }
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Koto Restaurant</title>
+  <meta name="description"
+    content="Experience the soul of Bosnian cuisine with a modern twist at Koto Restaurant in Sarajevo." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,400&family=Work+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#D4AF37",
+            "gold-100": "#F9F1D0",
+            "gold-200": "#E6D08A",
+            "gold-300": "#D4AF37",
+            "gold-400": "#AA8C2C",
+            "gold-500": "#80661A",
+            "black-rich": "#050505",
+            "black-surface": "#0F0F0F",
+            "black-card": "#161616",
+            "black-lighter": "#242424",
           },
+          fontFamily: {
+            sans: ["Work Sans", "sans-serif"],
+            serif: ["Playfair Display", "serif"],
+          },
+          backgroundImage: {
+            'luxury-gradient': 'linear-gradient(to bottom right, #0F0F0F, #050505)',
+          }
         },
-      };
-    </script>
-    <style>
-      body {
-        font-family: 'Work Sans', sans-serif;
-        background-color: #050505;
-      }
-      
-      h1, h2, h3, h4, h5, h6 {
-        font-family: 'Playfair Display', serif;
-      }
+      },
+    };
+  </script>
+  <style>
+    body {
+      font-family: 'Work Sans', sans-serif;
+      background-color: #050505;
+    }
 
-      /* Global Cursor Pointer */
-      button, a, [role="button"], input[type="button"], input[type="submit"] {
-        cursor: pointer;
-      }
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-family: 'Playfair Display', serif;
+    }
 
-      /* Luxury Gold Text Gradient */
-      .text-gold-gradient {
-        background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-        -webkit-background-clip: text;
-        background-clip: text;
-        color: transparent;
-        background-size: 200% auto;
-        animation: shine 8s linear infinite;
-      }
+    /* Global Cursor Pointer */
+    button,
+    a,
+    [role="button"],
+    input[type="button"],
+    input[type="submit"] {
+      cursor: pointer;
+    }
 
-      /* Luxury Gold Border Gradient */
-      .border-gold-gradient {
-        border-image: linear-gradient(to right, #bf953f, #fcf6ba, #b38728) 1;
-      }
+    /* Luxury Gold Text Gradient */
+    .text-gold-gradient {
+      background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 200% auto;
+      animation: shine 8s linear infinite;
+    }
 
-      /* Gold Button Gradient */
-      .bg-gold-gradient {
-        background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 40%, #b38728 100%);
-        transition: all 0.5s ease;
-      }
-      .bg-gold-gradient:hover {
-        background: linear-gradient(135deg, #fcf6ba 0%, #bf953f 100%);
-        box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-      }
+    /* Luxury Gold Border Gradient */
+    .border-gold-gradient {
+      border-image: linear-gradient(to right, #bf953f, #fcf6ba, #b38728) 1;
+    }
 
-      @keyframes shine {
-        to {
-          background-position: 200% center;
-        }
-      }
+    /* Gold Button Gradient */
+    .bg-gold-gradient {
+      background: linear-gradient(135deg, #bf953f 0%, #fcf6ba 40%, #b38728 100%);
+      transition: all 0.5s ease;
+    }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar {
-        width: 8px;
+    .bg-gold-gradient:hover {
+      background: linear-gradient(135deg, #fcf6ba 0%, #bf953f 100%);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+    }
+
+    @keyframes shine {
+      to {
+        background-position: 200% center;
       }
-      ::-webkit-scrollbar-track {
-        background: #050505;
-      }
-      ::-webkit-scrollbar-thumb {
-        background: #333;
-        border-radius: 4px;
-        border: 1px solid #050505;
-      }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #D4AF37;
-      }
-    </style>
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #050505;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+      border: 1px solid #050505;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #D4AF37;
+    }
+  </style>
   <script type="importmap">
 {
   "imports": {
@@ -118,8 +131,15 @@
 }
 </script>
 </head>
-  <body class="bg-black-rich text-white font-sans antialiased selection:bg-gold-300 selection:text-black-rich overflow-x-hidden">
-    <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
-  </body>
+
+<body
+  class="bg-black-rich text-white font-sans antialiased selection:bg-gold-300 selection:text-black-rich overflow-x-hidden">
+  <div id="root"></div>
+  <script type="module" src="./index.tsx"></script>
+  <script>
+    window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  </script>
+  <script defer src="/_vercel/insights/script.js"></script>
+</body>
+
 </html>

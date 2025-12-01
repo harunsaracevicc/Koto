@@ -6,7 +6,6 @@ import Menu from './pages/Menu';
 import Gallery from './pages/Gallery';
 import Contact from './pages/Contact';
 import { LanguageProvider } from './contexts/LanguageContext';
-import { Analytics } from "@vercel/analytics/next"
 
 const App: React.FC = () => {
   return (
@@ -18,7 +17,6 @@ const App: React.FC = () => {
             <Route path="/menu" element={<Menu />} />
             <Route path="/gallery" element={<Gallery />} />
             <Route path="/contact" element={<Contact />} />
-            <Analytics />
           </Routes>
         </Layout>
       </HashRouter>
