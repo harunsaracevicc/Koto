@@ -53,7 +53,7 @@ const Contact: React.FC = () => {
                         </div>
 
                         <div className="flex gap-6 mt-4">
-                            <button className="flex-1 py-4 bg-gold-gradient text-black-rich text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-gold-300">
+                            <button onClick={() => window.location.href = "tel:+38761000000"} className="flex-1 py-4 bg-gold-gradient text-black-rich text-sm font-bold tracking-widest uppercase hover:opacity-90 transition-opacity focus:outline-none focus:ring-2 focus:ring-gold-300">
                                 {t('contact.bookBtn')}
                             </button>
                         </div>
