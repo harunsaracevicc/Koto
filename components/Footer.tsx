@@ -14,7 +14,7 @@ const Footer: React.FC = () => {
           {/* Brand */}
           <div className="flex flex-col gap-6">
             <div className="w-48 text-gold-300">
-               <KotoLogo />
+              <KotoLogo />
             </div>
             <p className="text-white/40 text-sm leading-relaxed max-w-xs font-light">
               {t('footer.description')}
@@ -39,10 +39,6 @@ const Footer: React.FC = () => {
                 <span className="block text-white/90 mb-1">{t('contact.monFri')}</span>
                 <time>08:00 - 23:00</time>
               </li>
-              <li>
-                <span className="block text-white/90 mb-1">{t('contact.satSun')}</span>
-                <time>12:00 - 00:00</time>
-              </li>
             </ul>
           </div>
 
@@ -66,8 +62,8 @@ const Footer: React.FC = () => {
         <div className="flex flex-col md:flex-row justify-between items-center text-white/30 text-xs mt-20 pt-8 border-t border-white/5 font-light tracking-wider">
           <p>{t('footer.rights')}</p>
           <div className="flex gap-6 mt-4 md:mt-0">
-             <a href="#" className="hover:text-gold-300 transition-colors">{t('footer.privacy')}</a>
-             <a href="#" className="hover:text-gold-300 transition-colors">{t('footer.terms')}</a>
+            <a href="#" className="hover:text-gold-300 transition-colors">{t('footer.privacy')}</a>
+            <a href="#" className="hover:text-gold-300 transition-colors">{t('footer.terms')}</a>
           </div>
         </div>
       </div>
