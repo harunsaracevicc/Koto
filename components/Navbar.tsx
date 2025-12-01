@@ -38,23 +38,23 @@ const Navbar: React.FC = () => {
 
   const handleLinkClick = (path: string) => {
     if (path.startsWith('/#')) {
-        const hash = path.substring(2);
-        if (location.pathname !== '/') {
-            navigate('/');
-            setTimeout(() => {
-                 const el = document.getElementById(hash);
-                 if (el) {
-                   el.scrollIntoView({ behavior: 'smooth' });
-                   el.focus(); // Move focus to the section for a11y
-                 }
-            }, 100);
-        } else {
-             const el = document.getElementById(hash);
-             if (el) {
-                el.scrollIntoView({ behavior: 'smooth' });
-                el.focus();
-             }
+      const hash = path.substring(2);
+      if (location.pathname !== '/') {
+        navigate('/');
+        setTimeout(() => {
+          const el = document.getElementById(hash);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+            el.focus(); // Move focus to the section for a11y
+          }
+        }, 100);
+      } else {
+        const el = document.getElementById(hash);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth' });
+          el.focus();
         }
+      }
     }
   }
 
@@ -95,7 +95,7 @@ const Navbar: React.FC = () => {
             {/* Logo */}
             <RouterNavLink to="/" className="block group" aria-label="Koto Restaurant Home">
               <div className="w-32 md:w-40 text-gold-300 transform transition-all duration-500 group-hover:scale-105 group-hover:text-gold-200 group-hover:drop-shadow-[0_0_8px_rgba(212,175,55,0.5)]">
-                 <KotoLogo />
+                <KotoLogo />
               </div>
             </RouterNavLink>
 
@@ -146,7 +146,7 @@ const Navbar: React.FC = () => {
                 />
               </button>
 
-              <button 
+              <button
                 onClick={() => navigate('/menu')}
                 className="flex items-center justify-center px-6 py-2 rounded-full bg-gold-gradient text-black-rich text-xs font-bold tracking-widest uppercase hover:scale-105 transition-all duration-300 shadow-[0_0_20px_rgba(212,175,55,0.2)] focus:outline-none focus:ring-2 focus:ring-gold-300 focus:ring-offset-2 focus:ring-offset-black-rich"
                 aria-label={t('nav.menu')}
