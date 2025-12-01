@@ -30,8 +30,8 @@ export const ASSETS = {
 
   // Hero Section
   HERO: {
-    VIDEO: "https://cdn.pixabay.com/video/2020/09/13/50392-460183121.mp4",
-    POSTER: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3wzNjAzNTV8MHwxfGFsbHx8fHx8fHx8fDE3MTgxMDkyOTR8&ixlib=rb-4.0.3&q=80&w=1080"
+    VIDEO: KotoImage10,
+    POSTER: KotoImage13
   },
 
   // Philosophy Section
