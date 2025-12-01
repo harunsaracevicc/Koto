@@ -187,7 +187,7 @@ const Home: React.FC = () => {
                   <div className="flex flex-col gap-4">
                     <div className="w-full aspect-[4/5] overflow-hidden rounded border border-white/5 hover:border-gold-300/30 transition-colors duration-700">
                       <img
-                        src={ASSETS.PHILOSOPHY.INTERIOR}
+                        src={ASSETS.PHILOSOPHY.INTERIOR2}
                         alt="Elegant restaurant interior with warm lighting"
                         className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                       />
