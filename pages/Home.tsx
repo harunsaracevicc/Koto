@@ -6,6 +6,7 @@ import { MENU_ITEMS, GALLERY_ITEMS } from '../constants';
 import { ArrowRight, Star } from 'lucide-react';
 import { useLanguage } from '../contexts/LanguageContext';
 import { ASSETS } from '../assets/images';
+import { formatPrice } from '../utils';
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -176,7 +177,7 @@ const Home: React.FC = () => {
                     <h3 className="text-white text-2xl font-serif mb-2 group-hover:text-gold-300 transition-colors">{dish.name[language]}</h3>
                     <div className="w-12 h-px bg-white/10 mx-auto my-3 group-hover:bg-gold-300 transition-colors" aria-hidden="true"></div>
                     <p className="text-white/50 text-sm leading-relaxed mb-3 line-clamp-2">{dish.description[language]}</p>
-                    <span className="text-gold-300 font-bold font-serif text-xl">{dish.price}</span>
+                    <span className="text-gold-300 font-bold font-serif text-xl">{formatPrice(dish.price, language)}</span>
                   </div>
                 </div>
               </FadeIn>

@@ -7,7 +7,7 @@ export interface MenuItem {
   id: number;
   name: LocalizedString;
   description: LocalizedString;
-  price: string;
+  price: number;
   category: string;
   image: string;
 }
