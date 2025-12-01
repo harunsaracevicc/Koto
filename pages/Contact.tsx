@@ -61,11 +61,15 @@ const Contact: React.FC = () => {
                     {/* Map Visual */}
                     <FadeIn delay={0.4} className="h-full min-h-[400px]">
                         <div className="w-full h-full relative border border-white/10 overflow-hidden">
-                            <img
-                                src={ASSETS.CONTACT.MAP}
-                                alt="Location Map of Koto Restaurant"
-                                className="w-full h-full object-cover"
-                            />
+                            <iframe
+                                src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d1710.2656620400298!2d18.342569534989178!3d43.84471531975555!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zNDPCsDUwJzQxLjEiTiAxOMKwMjAnMzMuNCJF!5e0!3m2!1sen!2sba!4v1764608733297!5m2!1sen!2sba"
+                                width="100%"
+                                height="100%"
+                                style={{ border: 0 }}
+                                allowFullScreen
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                            ></iframe>
                             <div className="absolute inset-0 bg-black/20 pointer-events-none" aria-hidden="true" />
                             <div className="absolute bottom-6 left-6 bg-black-rich border border-gold-300/30 p-5 shadow-2xl flex items-center gap-4 max-w-xs">
                                 <div className="p-3 bg-gold-300 rounded-full text-black-rich" aria-hidden="true">
@@ -77,7 +81,7 @@ const Contact: React.FC = () => {
                                 </div>
                             </div>
                             {/* Make the entire map clickable if it's meant to open maps */}
-                            <a href="#" className="absolute inset-0 z-10" aria-label={t('contact.openMaps')}></a>
+                            <a href="https://www.google.com/maps/place/43%C2%B050'41.1%22N+18%C2%B020'33.4%22E/@43.8447153,18.3425695,17.75z/data=!4m4!3m3!8m2!3d43.844742!4d18.3426?entry=ttu&g_ep=EgoyMDI1MTEyMy4xIKXMDSoASAFQAw%3D%3D" className="absolute inset-0 z-10" target="_blank" rel="noopener noreferrer" aria-label={t('contact.openMaps')}></a>
                         </div>
                     </FadeIn>
                 </div>
