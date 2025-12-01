@@ -8,6 +8,7 @@ import Contact from './pages/Contact';
 import { LanguageProvider } from './contexts/LanguageContext';
 
 import { Analytics } from '@vercel/analytics/react';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 const App: React.FC = () => {
   return (
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         </Layout>
       </HashRouter>
       <Analytics />
+      <SpeedInsights />
     </LanguageProvider>
   );
 };
