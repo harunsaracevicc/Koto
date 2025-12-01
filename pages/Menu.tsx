@@ -58,7 +58,7 @@ const Menu: React.FC = () => {
         </FadeIn>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16" role="list">
+        <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-x-12 gap-y-16" role="list">
           {filteredItems.map((item, index) => (
             <FadeIn key={item.id} className="group cursor-pointer">
               <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start" role="listitem">
@@ -74,12 +74,12 @@ const Menu: React.FC = () => {
                 {/* Text */}
                 <div className="flex flex-col flex-1 text-center sm:text-left">
                   <div className="flex flex-col sm:flex-row justify-between items-baseline mb-2 border-b border-white/10 pb-2 border-dashed group-hover:border-gold-300/30 transition-colors">
-                    <h3 className="text-white text-xl font-serif group-hover:text-gold-300 transition-colors">
+                    <h3 className="text-white text-xl text-left font-serif group-hover:text-gold-300 transition-colors">
                       {item.name[language]}
                     </h3>
                     <span className="text-gold-300 font-bold font-serif text-lg">{formatPrice(item.price, language)}</span>
                   </div>
-                  <p className="text-white/50 text-sm leading-relaxed font-light">
+                  <p className="text-white/50 text-left text-sm leading-relaxed font-light">
                     {item.description[language]}
                   </p>
                 </div>
