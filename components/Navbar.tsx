@@ -119,7 +119,6 @@ const Navbar: React.FC = () => {
                       className={({ isActive }) =>
                         `text-sm tracking-widest font-sans uppercase transition-colors duration-300 relative group ${isActive && link.path !== '/' ? 'text-gold-300' : 'text-white/70 hover:text-gold-300'}`
                       }
-                      aria-current={({ isActive }) => isActive ? 'page' : undefined}
                     >
                       {link.name}
                       <span className="absolute -bottom-1 left-0 w-0 h-px bg-gold-300 transition-all duration-300 group-hover:w-full"></span>
@@ -188,9 +187,9 @@ const Navbar: React.FC = () => {
         {isOpen && (
           <motion.div
             id="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
+            initial={{ opacity: 0, height: '0vh' }}
             animate={{ opacity: 1, height: '100vh' }}
-            exit={{ opacity: 0, height: 0 }}
+            exit={{ opacity: 0, height: '0vh' }}
             className="md:hidden absolute top-full left-0 w-full bg-black-rich z-40 overflow-y-auto border-t border-white/10"
             style={{ maxHeight: 'calc(100vh - 80px)' }}
             role="dialog"
