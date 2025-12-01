@@ -37,7 +37,7 @@ const Footer: React.FC = () => {
             <ul className="flex flex-col gap-4 text-sm text-white/60 font-light">
               <li>
                 <span className="block text-white/90 mb-1">{t('contact.monFri')}</span>
-                <time>17:00 - 23:00</time>
+                <time>08:00 - 23:00</time>
               </li>
               <li>
                 <span className="block text-white/90 mb-1">{t('contact.satSun')}</span>
