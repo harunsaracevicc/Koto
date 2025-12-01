@@ -8,7 +8,7 @@ import Contact from './pages/Contact';
 import { LanguageProvider } from './contexts/LanguageContext';
 
 import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { SpeedInsights } from '@vercel/speed-insights/react';
 
 const App: React.FC = () => {
   return (
