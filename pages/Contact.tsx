@@ -45,7 +45,7 @@ const Contact: React.FC = () => {
                             <div className="flex flex-col sm:flex-row gap-6 border-t border-white/10 py-8 group hover:border-gold-300/30 transition-colors">
                                 <div className="w-40 shrink-0 text-gold-300 font-serif text-lg">{t('contact.hoursLabel')}</div>
                                 <div className="text-white/80 font-light text-lg">
-                                    <p>08:00 - 23:00</p>
+                                    <p>{t('contact.monFri')}: 08:00 - 23:00</p>
                                 </div>
                             </div>
                             <div className="border-t border-white/10 w-full"></div>

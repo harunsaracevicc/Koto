@@ -50,8 +50,8 @@ export const translations = {
       reservationsLabel: "Reservations",
       inquiriesLabel: "Inquiries",
       hoursLabel: "Opening Hours",
-      monFri: "Monday - Sunday",
-      satSun: "Saturday - Sunday",
+      monFri: "Mon - Sat",
+      satSun: "Sat - Sun",
       bookBtn: "Book a Table",
       openMaps: "Open in Google Maps"
     },
@@ -126,8 +126,8 @@ export const translations = {
       reservationsLabel: "Rezervacije",
       inquiriesLabel: "Upiti",
       hoursLabel: "Radno Vrijeme",
-      monFri: "Ponedjeljak - Nedjelja",
-      satSun: "Subota - Nedjelja",
+      monFri: "Pon - Sub",
+      satSun: "Sub - Ned",
       bookBtn: "Rezervišite Sto",
       openMaps: "Otvori u Google Mapama"
     },

@@ -85,7 +85,7 @@ const Navbar: React.FC = () => {
               </div>
               <div className="hidden md:flex items-center gap-2 text-gold-300">
                 <Clock size={12} aria-hidden="true" />
-                <span className="text-white/80">08:00 - 23:00</span>
+                <span className="text-white/80">{t('contact.monFri')}: 08:00 - 23:00</span>
               </div>
             </div>
             <div className="flex items-center gap-4 md:gap-8">

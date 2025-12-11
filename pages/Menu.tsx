@@ -55,7 +55,7 @@ const Menu: React.FC = () => {
   };
 
   const filteredItems = activeCategory === "All"
-    ? menuItems
+    ? menuItems.filter(item => item.category !== "Drinks")
     : menuItems.filter(item => item.category === activeCategory);
 
   return (
