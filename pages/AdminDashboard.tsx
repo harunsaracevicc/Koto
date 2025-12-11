@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Loader2, Image as ImageIcon, Lock, CheckCircle, AlertCircle, LogOut, Star } from 'lucide-react';
-import { fetchMenuItems, addMenuItem, updateMenuItem, deleteMenuItem, fetchCategories, addCategory, deleteCategory, Category } from '../lib/api';
+import { fetchMenuItems, addMenuItem, updateMenuItem, deleteMenuItem, fetchCategories, addCategory, deleteCategory, uploadImage, Category } from '../lib/api';
 import { MenuItem } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
@@ -42,6 +42,8 @@ const AdminDashboard: React.FC = () => {
         image: '',
         isSignature: false
     });
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [uploading, setUploading] = useState(false);
     const [newCategory, setNewCategory] = useState({ nameBs: '', nameEn: '' });
     const [submitting, setSubmitting] = useState(false);
 
@@ -141,12 +143,27 @@ const AdminDashboard: React.FC = () => {
                 setIsCreatingCategoryInItemModal(false);
             }
 
+            // Handle image upload if file is selected
+            let imageUrl = itemForm.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800';
+
+            if (imageFile) {
+                setUploading(true);
+                try {
+                    imageUrl = await uploadImage(imageFile);
+                } catch (uploadError) {
+                    console.error('Image upload failed:', uploadError);
+                    showStatus('error', 'Greška pri uploadu slike. Koristi se URL umjesto toga.');
+                } finally {
+                    setUploading(false);
+                }
+            }
+
             const payload = {
                 name: { bs: itemForm.nameBs, en: itemForm.nameEn || itemForm.nameBs },
                 description: { bs: itemForm.descBs, en: itemForm.descEn || itemForm.descBs },
                 price: parseFloat(itemForm.price),
                 category: finalCategory,
-                image: itemForm.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800',
+                image: imageUrl,
                 isSignature: itemForm.isSignature
             };
 
@@ -237,6 +254,7 @@ const AdminDashboard: React.FC = () => {
             image: '',
             isSignature: false
         });
+        setImageFile(null);
         setIsCreatingCategoryInItemModal(false);
         setNewCategory({ nameBs: '', nameEn: '' });
     };
@@ -525,13 +543,72 @@ const AdminDashboard: React.FC = () => {
                                     <textarea rows={3} className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
                                         value={itemForm.descEn} onChange={e => setItemForm({ ...itemForm, descEn: e.target.value })} />
                                 </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs text-white/60">Slika (URL)</label>
-                                    <div className="relative">
-                                        <ImageIcon className="absolute left-3 top-3 text-white/40" size={18} />
-                                        <input className="w-full bg-black-surface border border-white/10 rounded-lg p-3 pl-10 text-white outline-none focus:border-gold-300"
-                                            value={itemForm.image} onChange={e => setItemForm({ ...itemForm, image: e.target.value })} placeholder="https://..." />
+                                <div className="space-y-2">
+                                    <label className="text-xs text-white/60">Slika</label>
+
+                                    {/* Image Preview */}
+                                    {(imageFile || itemForm.image) && (
+                                        <div className="relative w-full h-48 rounded-lg overflow-hidden bg-black-surface border border-white/10">
+                                            <img
+                                                src={imageFile ? URL.createObjectURL(imageFile) : itemForm.image}
+                                                alt="Preview"
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setImageFile(null);
+                                                    setItemForm({ ...itemForm, image: '' });
+                                                }}
+                                                className="absolute top-2 right-2 p-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        </div>
+                                    )}
+
+                                    {/* File Upload Button */}
+                                    <div className="flex gap-2">
+                                        <label className="flex-1 cursor-pointer">
+                                            <div className="w-full bg-gold-500/10 hover:bg-gold-500/20 border border-gold-300/30 rounded-lg p-3 text-gold-300 font-medium text-center transition-colors flex items-center justify-center gap-2">
+                                                <ImageIcon size={18} />
+                                                {imageFile ? imageFile.name : 'Upload sa uređaja'}
+                                            </div>
+                                            <input
+                                                type="file"
+                                                accept="image/*"
+                                                className="hidden"
+                                                onChange={(e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (file) {
+                                                        setImageFile(file);
+                                                        setItemForm({ ...itemForm, image: '' }); // Clear URL when file is selected
+                                                    }
+                                                }}
+                                            />
+                                        </label>
                                     </div>
+
+                                    {/* URL Input (alternative) */}
+                                    <div className="relative">
+                                        <input
+                                            className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white text-sm outline-none focus:border-gold-300 disabled:opacity-50"
+                                            value={itemForm.image}
+                                            onChange={(e) => {
+                                                setItemForm({ ...itemForm, image: e.target.value });
+                                                if (e.target.value) setImageFile(null); // Clear file when URL is entered
+                                            }}
+                                            placeholder="ili unesi URL slike..."
+                                            disabled={!!imageFile}
+                                        />
+                                    </div>
+
+                                    {uploading && (
+                                        <div className="flex items-center gap-2 text-gold-300 text-sm">
+                                            <Loader2 className="animate-spin" size={14} />
+                                            <span>Upload u toku...</span>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="flex items-center gap-3 p-3 bg-white/5 rounded-lg border border-white/10 cursor-pointer" onClick={() => setItemForm(prev => ({ ...prev, isSignature: !prev.isSignature }))}>

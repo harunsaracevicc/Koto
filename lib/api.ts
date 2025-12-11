@@ -176,6 +176,35 @@ export const deleteCategory = async (id: number) => {
     if (error) throw error;
 };
 
+// --- Image Upload ---
+
+export const uploadImage = async (file: File): Promise<string> => {
+    // Generate unique filename with timestamp
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+    const filePath = `menu-items/${fileName}`;
+
+    // Upload to Supabase Storage
+    const { data, error } = await supabase.storage
+        .from('menu-images')
+        .upload(filePath, file, {
+            cacheControl: '3600',
+            upsert: false
+        });
+
+    if (error) {
+        console.error('Upload error:', error);
+        throw error;
+    }
+
+    // Get public URL
+    const { data: { publicUrl } } = supabase.storage
+        .from('menu-images')
+        .getPublicUrl(filePath);
+
+    return publicUrl;
+};
+
 // --- Gallery Items ---
 
 export const fetchGalleryItems = async (): Promise<GalleryItem[]> => {
