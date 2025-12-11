@@ -10,6 +10,7 @@ export interface MenuItem {
   price: number;
   category: string;
   image: string;
+  isSignature?: boolean;
 }
 
 export interface GalleryItem {

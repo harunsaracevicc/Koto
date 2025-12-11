@@ -4,6 +4,7 @@ import { NavLink as RouterNavLink, useLocation, useNavigate } from 'react-router
 import { Menu, X, Phone, MapPin, Clock } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '../contexts/LanguageContext';
+import { useAuth } from '../contexts/AuthContext';
 import KotoLogo from './KotoLogo';
 import { ASSETS } from '../assets/images';
 
@@ -13,6 +14,7 @@ const Navbar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { language, setLanguage, t } = useLanguage();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +28,13 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setIsOpen(false);
   }, [location.pathname]);
+
+  // Force Bosnian language and restrict navigation when user is logged in
+  useEffect(() => {
+    if (user && language !== 'bs') {
+      setLanguage('bs');
+    }
+  }, [user, language, setLanguage]);
 
   const navLinks = [
     { name: t('nav.home'), path: '/' },
@@ -130,6 +139,9 @@ const Navbar: React.FC = () => {
 
             {/* Actions */}
             <div className="hidden lg:flex items-center gap-6">
+              {/* User Status */}
+
+
               {/* Language Switcher */}
               <button
                 onClick={toggleLanguage}
