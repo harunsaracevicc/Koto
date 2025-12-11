@@ -439,9 +439,9 @@ const AdminDashboard: React.FC = () => {
                                             </span>
                                         )}
                                         {isInvisible && (
-                                            <p className="text-red-400/80 text-[10px] mb-2 flex items-center gap-1">
-                                                <AlertCircle size={10} />
-                                                Kategorija "{item.category}" ne postoji
+                                            <p className="text-red-400/80 text-[10px] mb-2 mt-4 flex gap-1">
+                                                <AlertCircle size={10} className="text-red-400 mt-0.5" />
+                                                Kategorija "{item.category}" ne postoji. Potrebno je samo da dodate "{item.category}" kategoriju.
                                             </p>
                                         )}
                                         <div className="flex gap-2">
