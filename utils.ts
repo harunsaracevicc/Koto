@@ -1,15 +1,11 @@
-
 export const formatPrice = (price: number, language: string): string => {
-    // Base price is in USD
+    // Base price is in BAM (KM)
     if (language === 'bs') {
-        // Convert USD to BAM (approx 1 USD = 1.85 BAM)
-        const converted = price * 1.85;
-        // Format with comma as decimal separator for Bosnian? Or dot?
-        // Bosnian usually uses comma, but let's stick to standard toFixed for now or use Intl.NumberFormat
-        return `${converted.toFixed(2)} KM`;
+        return `${price.toFixed(2)} KM`;
     } else {
-        // Convert USD to Euro (approx 1 USD = 0.95 EUR)
-        const converted = price * 0.95;
-        return `€${converted.toFixed(2)}`;
+        // Conversion logic as requested: 5 BAM input -> 5 * 1.95 for English
+        // Converting BAM to fixed rate (often EUR is /1.95, but user requested *1.95)
+        const converted = price * 1.95;
+        return `${converted.toFixed(2)} KM`;
     }
 };

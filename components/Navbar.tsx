@@ -30,11 +30,12 @@ const Navbar: React.FC = () => {
   }, [location.pathname]);
 
   // Force Bosnian language and restrict navigation when user is logged in
-  useEffect(() => {
-    if (user && language !== 'bs') {
-      setLanguage('bs');
-    }
-  }, [user, language, setLanguage]);
+  // Force Bosnian language restriction removed to allow language switching
+  // useEffect(() => {
+  //   if (user && language !== 'bs') {
+  //     setLanguage('bs');
+  //   }
+  // }, [user, language, setLanguage]);
 
   const navLinks = [
     { name: t('nav.home'), path: '/' },
