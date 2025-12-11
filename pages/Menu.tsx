@@ -103,7 +103,7 @@ const Menu: React.FC = () => {
         </FadeIn>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-x-12 gap-y-12" role="list">
+        <div className="grid grid-cols-2 lg:grid-cols-2 gap-x-12 gap-y-12" role="list">
           {filteredItems.map((item, index) => (
             <FadeIn key={item.id} className="group relative">
               <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start" role="listitem">
