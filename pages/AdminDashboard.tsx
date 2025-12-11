@@ -63,7 +63,7 @@ const AdminDashboard: React.FC = () => {
             });
 
             if (error) throw error;
-            // AuthContext will automatically update 'user' state via onAuthStateChange
+
         } catch (error) {
             console.error(error);
             setAuthError(true);
@@ -74,9 +74,18 @@ const AdminDashboard: React.FC = () => {
 
     const handleLogout = async () => {
         try {
-            await supabase.auth.signOut();
-        } catch (error) {
-            console.error("Error signing out:", error);
+            const { error } = await supabase.auth.signOut();
+
+            if (error && error.message !== 'Session from session_id claim in JWT does not exist') {
+                console.error('Supabase signOut error:', error);
+            }
+        } catch (err) {
+            console.error('Unexpected logout error:', err);
+        } finally {
+            // Always clear local session
+            localStorage.removeItem('supabase.auth.token');
+            supabase.auth.setSession(null);
+            window.location.href = '/admin';
         }
     };
 
