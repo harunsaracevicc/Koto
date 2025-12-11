@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Plus, Trash2, Edit2, Save, X, Loader2, Image as ImageIcon, Lock, CheckCircle, AlertCircle, LogOut, Star } from 'lucide-react';
+import { Plus, Trash2, Edit2, Save, X, Loader2, Image as ImageIcon, Lock, CheckCircle, AlertCircle, LogOut, Star, EyeOff } from 'lucide-react';
 import { fetchMenuItems, addMenuItem, updateMenuItem, deleteMenuItem, fetchCategories, addCategory, deleteCategory, uploadImage, Category } from '../lib/api';
 import { MenuItem } from '../types';
 import { useAuth } from '../contexts/AuthContext';
@@ -205,7 +205,6 @@ const AdminDashboard: React.FC = () => {
         try {
             await addCategory(newCategory.nameEn || newCategory.nameBs, newCategory.nameBs);
             await loadData();
-            setIsCategoryModalOpen(false);
             setNewCategory({ nameBs: '', nameEn: '' });
             showStatus('success', 'Kategorija dodana!');
         } catch (error) {
@@ -259,8 +258,20 @@ const AdminDashboard: React.FC = () => {
         setNewCategory({ nameBs: '', nameEn: '' });
     };
 
+    // Helper to check if item's category exists
+    const isCategoryValid = (itemCategory: string) => {
+        return categories.some(cat => cat.name.en === itemCategory);
+    };
+
     const displayItems = activeCategory === "Sve"
-        ? menuItems
+        ? menuItems.slice().sort((a, b) => {
+            const aValid = isCategoryValid(a.category);
+            const bValid = isCategoryValid(b.category);
+            // Valid items come first (return -1), invalid items go to end (return 1)
+            if (aValid && !bValid) return -1;
+            if (!aValid && bValid) return 1;
+            return 0; // Keep original order for items of same validity
+        })
         : menuItems.filter(i => i.category === activeCategory);
 
     // --- Loading State ---
@@ -362,7 +373,7 @@ const AdminDashboard: React.FC = () => {
                             onClick={() => setIsCategoryModalOpen(true)}
                             className="w-full bg-white/10 text-white font-bold py-3 rounded-lg flex items-center justify-center gap-2 hover:bg-white/20 transition-colors"
                         >
-                            <Plus size={18} /> Dodaj novu kategoriju
+                            <Edit2 size={18} /> Upravljaj kategorijama
                         </button>
                     </div>
                 </div>
@@ -376,22 +387,13 @@ const AdminDashboard: React.FC = () => {
                         SVE
                     </button>
                     {categories.map(cat => (
-                        <div key={cat.id} className="relative group">
-                            <button
-                                onClick={() => setActiveCategory(cat.name.en)}
-                                className={`px-4 py-2 rounded-xl text-sm font-bold transition-all pr-8 ${activeCategory === cat.name.en ? "bg-gold-300 text-black-rich shadow-lg shadow-gold-500/20" : "text-white/60 hover:text-white"}`}
-                            >
-                                {cat.name.bs}
-                            </button>
-                            {cat.id > 0 && (
-                                <button
-                                    onClick={(e) => { e.stopPropagation(); handleDeleteCategory(cat.id); }}
-                                    className="absolute right-1 top-1.5 p-1 text-red-400 rounded-full hover:bg-red-500 hover:text-white transition-colors opacity-0 group-hover:opacity-100"
-                                >
-                                    <X size={12} />
-                                </button>
-                            )}
-                        </div>
+                        <button
+                            key={cat.id}
+                            onClick={() => setActiveCategory(cat.name.en)}
+                            className={`px-4 py-2 rounded-xl text-sm font-bold transition-all ${activeCategory === cat.name.en ? "bg-gold-300 text-black-rich shadow-lg shadow-gold-500/20" : "text-white/60 hover:text-white"}`}
+                        >
+                            {cat.name.bs}
+                        </button>
                     ))}
                 </div>
 
@@ -400,38 +402,66 @@ const AdminDashboard: React.FC = () => {
                     <div className="flex justify-center py-20"><Loader2 className="animate-spin text-gold-300" size={40} /></div>
                 ) : (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                        {displayItems.map(item => (
-                            <div key={item.id} className="bg-white/5 border border-white/10 rounded-xl p-4 flex gap-4 items-start group hover:border-gold-300/30 transition-colors">
-                                <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-black/40">
-                                    <img src={item.image} alt="" className="w-full h-full object-cover" />
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex justify-between items-start mb-1">
-                                        <h4 className="font-serif text-lg text-white truncate pr-2 flex items-center gap-2">
-                                            {item.name.bs}
-                                            {item.isSignature && <Star size={14} className="text-gold-500 fill-gold-500" />}
-                                        </h4>
-                                        <span className="text-gold-300 font-bold text-sm bg-black-surface px-2 py-0.5 rounded">{item.price} KM</span>
+                        {displayItems.map(item => {
+                            const isInvisible = !isCategoryValid(item.category);
+                            return (
+                                <div
+                                    key={item.id}
+                                    className={`bg-white/5 border rounded-xl p-4 flex gap-4 items-start group transition-colors ${isInvisible
+                                        ? 'border-red-500/30 opacity-60 hover:opacity-80'
+                                        : 'border-white/10 hover:border-gold-300/30'
+                                        }`}
+                                >
+                                    <div className="w-20 h-20 rounded-lg overflow-hidden shrink-0 bg-black/40 relative">
+                                        <img src={item.image} alt="" className="w-full h-full object-cover" />
+                                        {isInvisible && (
+                                            <div className="absolute inset-0 bg-black/60 flex items-center justify-center">
+                                                <EyeOff size={24} className="text-red-400" />
+                                            </div>
+                                        )}
                                     </div>
-                                    <p className="text-white/40 text-xs line-clamp-2 mb-1 h-4">{item.description.bs}</p>
-                                    <p className="text-white/20 text-[10px] line-clamp-1 mb-3">{item.description.en}</p>
-                                    <div className="flex gap-2">
-                                        <button
-                                            onClick={() => openEditItem(item)}
-                                            className="px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-1"
-                                        >
-                                            <Edit2 size={12} /> Uredi
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteItem(item.id)}
-                                            className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-1"
-                                        >
-                                            <Trash2 size={12} /> Obriši
-                                        </button>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex justify-between flex-col items-start mb-1">
+                                            <div className="flex items-center gap-2 mb-1">
+                                                <h4 className="font-serif text-lg text-white truncate pr-2 flex items-center gap-2">
+                                                    {item.name.bs}
+                                                    {item.isSignature && <Star size={14} className="text-gold-500 fill-gold-500" />}
+                                                </h4>
+                                            </div>
+                                            <span className="text-gold-300 font-bold text-sm bg-black-surface rounded">Cijena: {item.price} KM</span>
+                                        </div>
+                                        <p className="text-white/40 text-xs line-clamp-2 mb-1 h-4">{item.description.bs}</p>
+                                        <p className="text-white/20 text-[10px] line-clamp-1 mb-3">{item.description.en}</p>
+                                        {isInvisible && (
+                                            <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold rounded flex items-center gap-1" style={{ width: 'fit-content' }}>
+                                                <EyeOff size={10} />
+                                                NEVIDLJIVO
+                                            </span>
+                                        )}
+                                        {isInvisible && (
+                                            <p className="text-red-400/80 text-[10px] mb-2 flex items-center gap-1">
+                                                <AlertCircle size={10} />
+                                                Kategorija "{item.category}" ne postoji
+                                            </p>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={() => openEditItem(item)}
+                                                className="px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-1"
+                                            >
+                                                <Edit2 size={12} /> Uredi
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteItem(item.id)}
+                                                className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-1"
+                                            >
+                                                <Trash2 size={12} /> Obriši
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            );
+                        })}
                     </div>
                 )}
             </div>
@@ -626,35 +656,67 @@ const AdminDashboard: React.FC = () => {
                 )}
             </AnimatePresence>
 
-            {/* Category Modal (Existing one, kept for standalone usage) */}
+            {/* Category Management Modal */}
             <AnimatePresence>
                 {isCategoryModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-black-card border border-white/20 w-full max-w-md rounded-2xl p-6 md:p-8">
+                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-black-card border border-white/20 w-full max-w-2xl rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
                             <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-serif text-gold-300">Dodaj Kategoriju</h2>
-                                <button onClick={() => setIsCategoryModalOpen(false)} className="text-white/40 hover:text-white"><X /></button>
+                                <h2 className="text-2xl font-serif text-gold-300">Upravljaj Kategorijama</h2>
+                                <button onClick={() => { setIsCategoryModalOpen(false); setNewCategory({ nameBs: '', nameEn: '' }); }} className="text-white/40 hover:text-white"><X /></button>
                             </div>
-                            <form onSubmit={handleCategorySubmit} className="space-y-4">
-                                <div className="space-y-1">
-                                    <label className="text-xs text-white/60">Naziv (BS)</label>
-                                    <input required className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
-                                        value={newCategory.nameBs} onChange={e => setNewCategory({ ...newCategory, nameBs: e.target.value })} placeholder="Npr. Kolači" />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-xs text-white/60">Interi Naziv (EN)</label>
-                                    <input className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
-                                        value={newCategory.nameEn} onChange={e => setNewCategory({ ...newCategory, nameEn: e.target.value })} placeholder="Cakes" />
-                                </div>
-                                <button type="submit" disabled={submitting} className="w-full bg-gold-gradient text-black-rich font-bold py-4 rounded-xl mt-4 hover:opacity-90 transition-opacity">
-                                    {submitting ? <Loader2 className="animate-spin mx-auto" /> : "Dodaj Kategoriju"}
-                                </button>
-                            </form>
+
+                            {/* Add New Category Form */}
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
+                                <h3 className="text-lg font-serif text-gold-200 mb-4">Dodaj Novu Kategoriju</h3>
+                                <form onSubmit={handleCategorySubmit} className="space-y-4">
+                                    <div className="grid grid-cols-2 gap-4">
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-white/60">Naziv (BS)</label>
+                                            <input required className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
+                                                value={newCategory.nameBs} onChange={e => setNewCategory({ ...newCategory, nameBs: e.target.value })} placeholder="Npr. Kolači" />
+                                        </div>
+                                        <div className="space-y-1">
+                                            <label className="text-xs text-white/60">Naziv (EN)</label>
+                                            <input className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
+                                                value={newCategory.nameEn} onChange={e => setNewCategory({ ...newCategory, nameEn: e.target.value })} placeholder="Cakes" />
+                                        </div>
+                                    </div>
+                                    <button type="submit" disabled={submitting} className="w-full bg-gold-gradient text-black-rich font-bold py-3 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                                        {submitting ? <Loader2 className="animate-spin" size={18} /> : <><Plus size={18} /> Dodaj Kategoriju</>}
+                                    </button>
+                                </form>
+                            </div>
+
+                            {/* Existing Categories List */}
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                                <h3 className="text-lg font-serif text-gold-200 mb-4">Postojeće Kategorije</h3>
+                                {categories.length === 0 ? (
+                                    <p className="text-white/40 text-center py-8">Nema kategorija</p>
+                                ) : (
+                                    <div className="space-y-2">
+                                        {categories.map(cat => (
+                                            <div key={cat.id} className="flex items-center justify-between p-3 bg-black-surface/50 rounded-lg border border-white/5 hover:border-white/10 transition-colors">
+                                                <div className="flex-1">
+                                                    <p className="text-white font-medium">{cat.name.bs}</p>
+                                                    <p className="text-white/40 text-xs">{cat.name.en}</p>
+                                                </div>
+                                                <button
+                                                    onClick={() => handleDeleteCategory(cat.id)}
+                                                    className="px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+                                                >
+                                                    <Trash2 size={14} /> Obriši
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
                         </motion.div>
                     </div>
                 )}
             </AnimatePresence>
-        </div>
+        </div >
     );
 };
 
