@@ -75,17 +75,15 @@ const AdminDashboard: React.FC = () => {
     const handleLogout = async () => {
         try {
             const { error } = await supabase.auth.signOut();
-
             if (error && error.message !== 'Session from session_id claim in JWT does not exist') {
                 console.error('Supabase signOut error:', error);
             }
         } catch (err) {
-            console.error('Unexpected logout error:', err);
+            console.warn('Unexpected logout error:', err);
         } finally {
-            // Always clear local session
-            localStorage.removeItem('supabase.auth.token');
             supabase.auth.setSession(null);
-            window.location.href = '/admin';
+            localStorage.removeItem('supabase.auth.token');
+            localStorage.removeItem('adminPin');
         }
     };
 
