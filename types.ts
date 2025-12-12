@@ -11,6 +11,7 @@ export interface MenuItem {
   category: string;
   image: string;
   isSignature?: boolean;
+  subcategory?: string;
 }
 
 export interface GalleryItem {

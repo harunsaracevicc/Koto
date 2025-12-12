@@ -102,37 +102,102 @@ const Menu: React.FC = () => {
           </div>
         </FadeIn>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-2 gap-x-12 gap-y-12" role="list">
-          {filteredItems.map((item, index) => (
-            <FadeIn key={item.id} className="group relative">
-              <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start" role="listitem">
-                <div className="relative overflow-hidden rounded-full w-32 h-32 flex-shrink-0 border-2 border-gold-300/20 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:border-gold-300/50 transition-colors duration-500">
-                  <img
-                    src={item.image}
-                    alt={item.name[language]}
-                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                    loading="lazy"
-                  />
-                </div>
-                <div className="flex-1 text-center sm:text-left">
-                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-2 mb-2 relative">
-                    <h3 className="text-xl font-serif text-gold-200 group-hover:text-gold-300 transition-colors">
-                      {item.name[language]}
+        {/* Grid - Different layout for Drinks */}
+        {activeCategory === "Drinks" ? (
+          // Drinks layout - simple list grouped by subcategory
+          <div className="max-w-4xl mx-auto">
+            {(() => {
+              // Group drinks by subcategory
+              const drinksBySubcategory: Record<string, MenuItem[]> = {};
+              const subcategoryOrder = ["Gazirani sokovi", "Prirodni sokovi", "Topli napitci", "Vina", "Alkoholna pića"];
+
+              filteredItems.forEach(item => {
+                const subcat = item.subcategory || "Ostalo";
+                if (!drinksBySubcategory[subcat]) {
+                  drinksBySubcategory[subcat] = [];
+                }
+                drinksBySubcategory[subcat].push(item);
+              });
+
+              // Sort subcategories by predefined order
+              const sortedSubcategories = Object.keys(drinksBySubcategory).sort((a, b) => {
+                const indexA = subcategoryOrder.indexOf(a);
+                const indexB = subcategoryOrder.indexOf(b);
+                if (indexA === -1 && indexB === -1) return 0;
+                if (indexA === -1) return 1;
+                if (indexB === -1) return -1;
+                return indexA - indexB;
+              });
+
+              return sortedSubcategories.map((subcategory, idx) => (
+                <FadeIn key={subcategory} delay={idx * 0.1}>
+                  <div className="mb-12">
+                    {/* Subcategory header */}
+                    <h3 className="text-2xl font-serif text-gold-300 mb-6 pb-2 border-b border-gold-300/20">
+                      {subcategory}
                     </h3>
-                    <div className="absolute bottom-1 left-0 w-full h-px bg-white/10 hidden sm:block -z-10"></div>
-                    <span className="text-lg font-bold text-gold-300 bg-black-rich pl-2">
-                      {formatPrice(item.price, language)}
-                    </span>
+
+                    {/* Items in this subcategory */}
+                    <div className="space-y-3">
+                      {drinksBySubcategory[subcategory].map(item => (
+                        <div
+                          key={item.id}
+                          className="flex justify-between items-baseline gap-4 group hover:bg-white/5 p-3 rounded-lg transition-colors"
+                        >
+                          <div className="flex-1">
+                            <h4 className="text-lg text-white group-hover:text-gold-200 transition-colors">
+                              {item.name[language]}
+                            </h4>
+                            {item.description[language] && (
+                              <p className="text-white/50 text-sm mt-1">
+                                {item.description[language]}
+                              </p>
+                            )}
+                          </div>
+                          <span className="text-lg font-bold text-gold-300 whitespace-nowrap">
+                            {formatPrice(item.price, language)}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <p className="text-white/60 text-sm leading-relaxed font-light">
-                    {item.description[language]}
-                  </p>
+                </FadeIn>
+              ));
+            })()}
+          </div>
+        ) : (
+          // Regular food items layout with images
+          <div className="grid grid-cols-2 lg:grid-cols-2 gap-x-12 gap-y-12" role="list">
+            {filteredItems.map((item, index) => (
+              <FadeIn key={item.id} className="group relative">
+                <div className="flex flex-col sm:flex-row gap-6 items-center sm:items-start" role="listitem">
+                  <div className="relative overflow-hidden rounded-full w-32 h-32 flex-shrink-0 border-2 border-gold-300/20 shadow-[0_0_15px_rgba(212,175,55,0.1)] group-hover:border-gold-300/50 transition-colors duration-500">
+                    <img
+                      src={item.image}
+                      alt={item.name[language]}
+                      className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+                      loading="lazy"
+                    />
+                  </div>
+                  <div className="flex-1 text-center sm:text-left">
+                    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-baseline gap-2 mb-2 relative">
+                      <h3 className="text-xl font-serif text-gold-200 group-hover:text-gold-300 transition-colors">
+                        {item.name[language]}
+                      </h3>
+                      <div className="absolute bottom-1 left-0 w-full h-px bg-white/10 hidden sm:block -z-10"></div>
+                      <span className="text-lg font-bold text-gold-300 bg-black-rich pl-2">
+                        {formatPrice(item.price, language)}
+                      </span>
+                    </div>
+                    <p className="text-white/60 text-sm leading-relaxed font-light">
+                      {item.description[language]}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            </FadeIn>
-          ))}
-        </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
 
         {filteredItems.length === 0 && (
           <FadeIn>

@@ -27,7 +27,8 @@ export const fetchMenuItems = async (): Promise<MenuItem[]> => {
         price: item.price,
         category: item.category,
         image: item.image_url,
-        isSignature: item.is_signature
+        isSignature: item.is_signature,
+        subcategory: item.subcategory
     }));
 };
 
@@ -50,7 +51,8 @@ export const addMenuItem = async (item: Omit<MenuItem, 'id'>) => {
         price: item.price,
         category: item.category,
         image_url: item.image,
-        is_signature: item.isSignature
+        is_signature: item.isSignature,
+        subcategory: item.subcategory
     };
 
     const { data, error } = await supabase
@@ -68,7 +70,8 @@ export const addMenuItem = async (item: Omit<MenuItem, 'id'>) => {
         price: data.price,
         category: data.category,
         image: data.image_url,
-        isSignature: data.is_signature
+        isSignature: data.is_signature,
+        subcategory: data.subcategory
     };
 };
 
@@ -82,6 +85,7 @@ export const updateMenuItem = async (id: number, item: Partial<Omit<MenuItem, 'i
     if (item.category) dbUpdates.category = item.category;
     if (item.image) dbUpdates.image_url = item.image;
     if (item.isSignature !== undefined) dbUpdates.is_signature = item.isSignature;
+    if (item.subcategory !== undefined) dbUpdates.subcategory = item.subcategory;
 
     const { data, error } = await supabase
         .from('menu_items')
@@ -99,7 +103,8 @@ export const updateMenuItem = async (id: number, item: Partial<Omit<MenuItem, 'i
         price: data.price,
         category: data.category,
         image: data.image_url,
-        isSignature: data.is_signature
+        isSignature: data.is_signature,
+        subcategory: data.subcategory
     };
 };
 

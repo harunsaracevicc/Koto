@@ -17,6 +17,7 @@ const AdminDashboard: React.FC = () => {
     // --- Data State ---
     const [menuItems, setMenuItems] = useState<any[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
+    const [existingSubcategories, setExistingSubcategories] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState("Sve");
 
@@ -40,11 +41,14 @@ const AdminDashboard: React.FC = () => {
         price: '',
         category: '',
         image: '',
-        isSignature: false
+        isSignature: false,
+        subcategory: ''
     });
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [uploading, setUploading] = useState(false);
     const [newCategory, setNewCategory] = useState({ nameBs: '', nameEn: '' });
+    const [newSubcategory, setNewSubcategory] = useState('');
+    const [isCreatingSubcategory, setIsCreatingSubcategory] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
     useEffect(() => {
@@ -95,6 +99,16 @@ const AdminDashboard: React.FC = () => {
             const [items, cats] = await Promise.all([fetchMenuItems(), fetchCategories()]);
             setMenuItems(items);
             setCategories(cats);
+
+            // Extract unique subcategories from items
+            const subcategories = Array.from(
+                new Set(
+                    items
+                        .map(item => item.subcategory)
+                        .filter(sub => sub && sub.trim() !== '')
+                )
+            ).sort();
+            setExistingSubcategories(subcategories);
         } catch (e) {
             showStatus('error', "Greška prilikom učitavanja podataka.");
         }
@@ -143,6 +157,14 @@ const AdminDashboard: React.FC = () => {
                 setIsCreatingCategoryInItemModal(false);
             }
 
+            // Handle inline subcategory creation
+            let finalSubcategory = itemForm.subcategory;
+            if (isCreatingSubcategory && newSubcategory.trim()) {
+                finalSubcategory = newSubcategory.trim();
+                setIsCreatingSubcategory(false);
+                setNewSubcategory('');
+            }
+
             // Handle image upload if file is selected
             let imageUrl = itemForm.image || 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&q=80&w=800';
 
@@ -164,7 +186,8 @@ const AdminDashboard: React.FC = () => {
                 price: parseFloat(itemForm.price),
                 category: finalCategory,
                 image: imageUrl,
-                isSignature: itemForm.isSignature
+                isSignature: itemForm.isSignature,
+                subcategory: finalSubcategory || undefined
             };
 
             if (editingItem) {
@@ -237,7 +260,8 @@ const AdminDashboard: React.FC = () => {
             price: item.price.toString(),
             category: item.category,
             image: item.image,
-            isSignature: item.isSignature || false
+            isSignature: item.isSignature || false,
+            subcategory: item.subcategory || ''
         });
         setIsCreatingCategoryInItemModal(false);
         setIsItemModalOpen(true);
@@ -251,11 +275,14 @@ const AdminDashboard: React.FC = () => {
             price: '',
             category: categories.length > 0 ? categories[0].name.en : '',
             image: '',
-            isSignature: false
+            isSignature: false,
+            subcategory: ''
         });
         setImageFile(null);
         setIsCreatingCategoryInItemModal(false);
+        setIsCreatingSubcategory(false);
         setNewCategory({ nameBs: '', nameEn: '' });
+        setNewSubcategory('');
     };
 
     // Helper to check if item's category exists
@@ -400,7 +427,89 @@ const AdminDashboard: React.FC = () => {
                 {/* Grid */}
                 {loading ? (
                     <div className="flex justify-center py-20"><Loader2 className="animate-spin text-gold-300" size={40} /></div>
+                ) : activeCategory === "Drinks" ? (
+                    // Drinks layout - grouped by subcategory
+                    <div className="space-y-8">
+                        {(() => {
+                            // Group drinks by subcategory
+                            const drinksBySubcategory: Record<string, any[]> = {};
+                            displayItems.forEach(item => {
+                                const subcat = item.subcategory || "Ostalo";
+                                if (!drinksBySubcategory[subcat]) {
+                                    drinksBySubcategory[subcat] = [];
+                                }
+                                drinksBySubcategory[subcat].push(item);
+                            });
+
+                            return Object.entries(drinksBySubcategory).map(([subcategory, items]) => (
+                                <div key={subcategory} className="space-y-4">
+                                    {/* Subcategory Header */}
+                                    <h3 className="text-xl font-serif text-gold-300 pb-2 border-b border-gold-300/20">
+                                        {subcategory}
+                                    </h3>
+
+                                    {/* Items in this subcategory */}
+                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                                        {items.map(item => {
+                                            const isInvisible = !isCategoryValid(item.category);
+                                            return (
+                                                <div
+                                                    key={item.id}
+                                                    className={`bg-white/5 border rounded-xl p-4 flex gap-4 items-start group transition-colors ${isInvisible
+                                                        ? 'border-red-500/30 opacity-60 hover:opacity-80'
+                                                        : 'border-white/10 hover:border-gold-300/30'
+                                                        }`}
+                                                >
+                                                    {/* No image for drinks */}
+                                                    <div className="flex-1 min-w-0">
+                                                        <div className="flex justify-between flex-col items-start mb-1">
+                                                            <div className="flex items-center gap-2 mb-1">
+                                                                <h4 className="font-serif text-lg text-white truncate pr-2 flex items-center gap-2">
+                                                                    {item.name.bs}
+                                                                    {item.isSignature && <Star size={14} className="text-gold-500 fill-gold-500" />}
+                                                                </h4>
+                                                            </div>
+                                                            <span className="text-gold-300 font-bold text-sm bg-black-surface rounded">Cijena: {item.price} KM</span>
+                                                        </div>
+                                                        <p className="text-white/40 text-xs line-clamp-2 mb-1 h-4">{item.description.bs}</p>
+                                                        <p className="text-white/20 text-[10px] line-clamp-1 mb-3">{item.description.en}</p>
+                                                        {isInvisible && (
+                                                            <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold rounded flex items-center gap-1" style={{ width: 'fit-content' }}>
+                                                                <EyeOff size={10} />
+                                                                NEVIDLJIVO
+                                                            </span>
+                                                        )}
+                                                        {isInvisible && (
+                                                            <p className="text-red-400/80 text-[10px] mb-2 mt-4 flex gap-1">
+                                                                <AlertCircle size={10} className="text-red-400 mt-0.5" />
+                                                                Kategorija "{item.category}" ne postoji. Potrebno je samo da dodate "{item.category}" kategoriju.
+                                                            </p>
+                                                        )}
+                                                        <div className="flex gap-2">
+                                                            <button
+                                                                onClick={() => openEditItem(item)}
+                                                                className="px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-1"
+                                                            >
+                                                                <Edit2 size={12} /> Uredi
+                                                            </button>
+                                                            <button
+                                                                onClick={() => handleDeleteItem(item.id)}
+                                                                className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-1"
+                                                            >
+                                                                <Trash2 size={12} /> Obriši
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
+                            ));
+                        })()}
+                    </div>
                 ) : (
+                    // Regular food items with images
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {displayItems.map(item => {
                             const isInvisible = !isCategoryValid(item.category);
@@ -558,6 +667,46 @@ const AdminDashboard: React.FC = () => {
                                         </select>
                                     )}
                                 </div>
+                                {/* Subcategory field - only for Drinks */}
+                                {itemForm.category === 'Drinks' && (
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between items-center">
+                                            <label className="text-xs text-white/60">Podkategorija (samo za Pića)</label>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setIsCreatingSubcategory(!isCreatingSubcategory);
+                                                    if (!isCreatingSubcategory) setNewSubcategory('');
+                                                }}
+                                                className={`text-[10px] font-bold uppercase transition-colors ${isCreatingSubcategory ? 'text-red-400 hover:text-red-300' : 'text-gold-300 hover:text-gold-200'}`}
+                                            >
+                                                {isCreatingSubcategory ? 'x Otkaži' : '+ Nova Podkategorija'}
+                                            </button>
+                                        </div>
+
+                                        {isCreatingSubcategory ? (
+                                            <input
+                                                required={isCreatingSubcategory}
+                                                autoFocus
+                                                className="w-full bg-black-surface border border-gold-300/50 rounded-lg p-3 text-white outline-none focus:border-gold-300"
+                                                value={newSubcategory}
+                                                onChange={e => setNewSubcategory(e.target.value)}
+                                                placeholder="Unesite novu podkategoriju..."
+                                            />
+                                        ) : (
+                                            <select
+                                                className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
+                                                value={itemForm.subcategory}
+                                                onChange={e => setItemForm({ ...itemForm, subcategory: e.target.value })}
+                                            >
+                                                <option value="">Bez podkategorije</option>
+                                                {existingSubcategories.map(subcat => (
+                                                    <option key={subcat} value={subcat}>{subcat}</option>
+                                                ))}
+                                            </select>
+                                        )}
+                                    </div>
+                                )}
                                 <div className="space-y-1">
                                     <label className="text-xs text-white/60">Cijena (KM)</label>
                                     <input required type="number" step="0.1" className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
@@ -653,69 +802,72 @@ const AdminDashboard: React.FC = () => {
                             </form>
                         </motion.div>
                     </div>
-                )}
-            </AnimatePresence>
+                )
+                }
+            </AnimatePresence >
 
             {/* Category Management Modal */}
             <AnimatePresence>
-                {isCategoryModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-                        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-black-card border border-white/20 w-full max-w-2xl rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
-                            <div className="flex justify-between items-center mb-6">
-                                <h2 className="text-2xl font-serif text-gold-300">Upravljaj Kategorijama</h2>
-                                <button onClick={() => { setIsCategoryModalOpen(false); setNewCategory({ nameBs: '', nameEn: '' }); }} className="text-white/40 hover:text-white"><X /></button>
-                            </div>
+                {
+                    isCategoryModalOpen && (
+                        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+                            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-black-card border border-white/20 w-full max-w-2xl rounded-2xl p-6 md:p-8 max-h-[90vh] overflow-y-auto">
+                                <div className="flex justify-between items-center mb-6">
+                                    <h2 className="text-2xl font-serif text-gold-300">Upravljaj Kategorijama</h2>
+                                    <button onClick={() => { setIsCategoryModalOpen(false); setNewCategory({ nameBs: '', nameEn: '' }); }} className="text-white/40 hover:text-white"><X /></button>
+                                </div>
 
-                            {/* Add New Category Form */}
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
-                                <h3 className="text-lg font-serif text-gold-200 mb-4">Dodaj Novu Kategoriju</h3>
-                                <form onSubmit={handleCategorySubmit} className="space-y-4">
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="space-y-1">
-                                            <label className="text-xs text-white/60">Naziv (BS)</label>
-                                            <input required className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
-                                                value={newCategory.nameBs} onChange={e => setNewCategory({ ...newCategory, nameBs: e.target.value })} placeholder="Npr. Kolači" />
-                                        </div>
-                                        <div className="space-y-1">
-                                            <label className="text-xs text-white/60">Naziv (EN)</label>
-                                            <input className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
-                                                value={newCategory.nameEn} onChange={e => setNewCategory({ ...newCategory, nameEn: e.target.value })} placeholder="Cakes" />
-                                        </div>
-                                    </div>
-                                    <button type="submit" disabled={submitting} className="w-full bg-gold-gradient text-black-rich font-bold py-3 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
-                                        {submitting ? <Loader2 className="animate-spin" size={18} /> : <><Plus size={18} /> Dodaj Kategoriju</>}
-                                    </button>
-                                </form>
-                            </div>
-
-                            {/* Existing Categories List */}
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-                                <h3 className="text-lg font-serif text-gold-200 mb-4">Postojeće Kategorije</h3>
-                                {categories.length === 0 ? (
-                                    <p className="text-white/40 text-center py-8">Nema kategorija</p>
-                                ) : (
-                                    <div className="space-y-2">
-                                        {categories.map(cat => (
-                                            <div key={cat.id} className="flex items-center justify-between p-3 bg-black-surface/50 rounded-lg border border-white/5 hover:border-white/10 transition-colors">
-                                                <div className="flex-1">
-                                                    <p className="text-white font-medium">{cat.name.bs}</p>
-                                                    <p className="text-white/40 text-xs">{cat.name.en}</p>
-                                                </div>
-                                                <button
-                                                    onClick={() => handleDeleteCategory(cat.id)}
-                                                    className="px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
-                                                >
-                                                    <Trash2 size={14} /> Obriši
-                                                </button>
+                                {/* Add New Category Form */}
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-6 mb-6">
+                                    <h3 className="text-lg font-serif text-gold-200 mb-4">Dodaj Novu Kategoriju</h3>
+                                    <form onSubmit={handleCategorySubmit} className="space-y-4">
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <div className="space-y-1">
+                                                <label className="text-xs text-white/60">Naziv (BS)</label>
+                                                <input required className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
+                                                    value={newCategory.nameBs} onChange={e => setNewCategory({ ...newCategory, nameBs: e.target.value })} placeholder="Npr. Kolači" />
                                             </div>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </motion.div>
-                    </div>
-                )}
-            </AnimatePresence>
+                                            <div className="space-y-1">
+                                                <label className="text-xs text-white/60">Naziv (EN)</label>
+                                                <input className="w-full bg-black-surface border border-white/10 rounded-lg p-3 text-white outline-none focus:border-gold-300"
+                                                    value={newCategory.nameEn} onChange={e => setNewCategory({ ...newCategory, nameEn: e.target.value })} placeholder="Cakes" />
+                                            </div>
+                                        </div>
+                                        <button type="submit" disabled={submitting} className="w-full bg-gold-gradient text-black-rich font-bold py-3 rounded-xl hover:opacity-90 transition-opacity flex items-center justify-center gap-2">
+                                            {submitting ? <Loader2 className="animate-spin" size={18} /> : <><Plus size={18} /> Dodaj Kategoriju</>}
+                                        </button>
+                                    </form>
+                                </div>
+
+                                {/* Existing Categories List */}
+                                <div className="bg-white/5 border border-white/10 rounded-xl p-6">
+                                    <h3 className="text-lg font-serif text-gold-200 mb-4">Postojeće Kategorije</h3>
+                                    {categories.length === 0 ? (
+                                        <p className="text-white/40 text-center py-8">Nema kategorija</p>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {categories.map(cat => (
+                                                <div key={cat.id} className="flex items-center justify-between p-3 bg-black-surface/50 rounded-lg border border-white/5 hover:border-white/10 transition-colors">
+                                                    <div className="flex-1">
+                                                        <p className="text-white font-medium">{cat.name.bs}</p>
+                                                        <p className="text-white/40 text-xs">{cat.name.en}</p>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleDeleteCategory(cat.id)}
+                                                        className="px-3 py-2 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-sm font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-2"
+                                                    >
+                                                        <Trash2 size={14} /> Obriši
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            </motion.div>
+                        </div>
+                    )
+                }
+            </AnimatePresence >
         </div >
     );
 };
