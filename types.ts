@@ -12,6 +12,7 @@ export interface MenuItem {
   image: string;
   isSignature?: boolean;
   subcategory?: string;
+  display_order?: number;
 }
 
 export interface GalleryItem {

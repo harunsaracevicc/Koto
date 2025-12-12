@@ -9,7 +9,7 @@ export const fetchMenuItems = async (): Promise<MenuItem[]> => {
     const { data, error } = await supabase
         .from('menu_items')
         .select('*')
-        .order('category', { ascending: true });
+        .order('display_order', { ascending: true });
 
     if (error) {
         console.error('Error fetching menu items:', error);
@@ -28,7 +28,8 @@ export const fetchMenuItems = async (): Promise<MenuItem[]> => {
         category: item.category,
         image: item.image_url,
         isSignature: item.is_signature,
-        subcategory: item.subcategory
+        subcategory: item.subcategory,
+        display_order: item.display_order || 0
     }));
 };
 
@@ -52,7 +53,8 @@ export const addMenuItem = async (item: Omit<MenuItem, 'id'>) => {
         category: item.category,
         image_url: item.image,
         is_signature: item.isSignature,
-        subcategory: item.subcategory
+        subcategory: item.subcategory,
+        display_order: item.display_order || 0
     };
 
     const { data, error } = await supabase
@@ -71,7 +73,8 @@ export const addMenuItem = async (item: Omit<MenuItem, 'id'>) => {
         category: data.category,
         image: data.image_url,
         isSignature: data.is_signature,
-        subcategory: data.subcategory
+        subcategory: data.subcategory,
+        display_order: data.display_order || 0
     };
 };
 
@@ -86,6 +89,7 @@ export const updateMenuItem = async (id: number, item: Partial<Omit<MenuItem, 'i
     if (item.image) dbUpdates.image_url = item.image;
     if (item.isSignature !== undefined) dbUpdates.is_signature = item.isSignature;
     if (item.subcategory !== undefined) dbUpdates.subcategory = item.subcategory;
+    if (item.display_order !== undefined) dbUpdates.display_order = item.display_order;
 
     const { data, error } = await supabase
         .from('menu_items')
@@ -104,8 +108,65 @@ export const updateMenuItem = async (id: number, item: Partial<Omit<MenuItem, 'i
         category: data.category,
         image: data.image_url,
         isSignature: data.is_signature,
-        subcategory: data.subcategory
+        subcategory: data.subcategory,
+        display_order: data.display_order || 0
     };
+};
+
+// Bulk update display_order for multiple items
+export const updateItemsOrder = async (updates: { id: number; display_order: number }[]) => {
+    try {
+        const promises = updates.map(({ id, display_order }) =>
+            supabase
+                .from('menu_items')
+                .update({ display_order })
+                .eq('id', id)
+        );
+
+        await Promise.all(promises);
+    } catch (error) {
+        console.error('Error updating item orders:', error);
+        throw error;
+    }
+};
+
+// --- Subcategory Ordering ---
+
+export interface SubcategoryOrder {
+    id: number;
+    subcategory: string;
+    display_order: number;
+}
+
+// Fetch subcategory order
+export const fetchSubcategoryOrder = async (): Promise<SubcategoryOrder[]> => {
+    const { data, error } = await supabase
+        .from('subcategory_order')
+        .select('*')
+        .order('display_order', { ascending: true });
+
+    if (error) {
+        console.warn('Error fetching subcategory order:', error);
+        return [];
+    }
+
+    return data || [];
+};
+
+// Update subcategory order
+export const updateSubcategoryOrder = async (updates: { subcategory: string; display_order: number }[]) => {
+    try {
+        const promises = updates.map(({ subcategory, display_order }) =>
+            supabase
+                .from('subcategory_order')
+                .upsert({ subcategory, display_order }, { onConflict: 'subcategory' })
+        );
+
+        await Promise.all(promises);
+    } catch (error) {
+        console.error('Error updating subcategory order:', error);
+        throw error;
+    }
 };
 
 // --- Categories ---

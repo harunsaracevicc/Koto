@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Plus, Trash2, Edit2, Save, X, Loader2, Image as ImageIcon, Lock, CheckCircle, AlertCircle, LogOut, Star, EyeOff } from 'lucide-react';
-import { fetchMenuItems, addMenuItem, updateMenuItem, deleteMenuItem, fetchCategories, addCategory, deleteCategory, uploadImage, Category } from '../lib/api';
+import { fetchMenuItems, addMenuItem, updateMenuItem, deleteMenuItem, fetchCategories, addCategory, deleteCategory, uploadImage, updateItemsOrder, fetchSubcategoryOrder, updateSubcategoryOrder, Category, SubcategoryOrder } from '../lib/api';
 import { MenuItem } from '../types';
 import { useAuth } from '../contexts/AuthContext';
 import { supabase } from '../lib/supabase';
+import { SortableList } from '../components/SortableList';
 
 const AdminDashboard: React.FC = () => {
     // --- Auth State ---
@@ -18,6 +19,7 @@ const AdminDashboard: React.FC = () => {
     const [menuItems, setMenuItems] = useState<any[]>([]);
     const [categories, setCategories] = useState<Category[]>([]);
     const [existingSubcategories, setExistingSubcategories] = useState<string[]>([]);
+    const [subcategoryOrder, setSubcategoryOrder] = useState<SubcategoryOrder[]>([]);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState("Sve");
 
@@ -96,9 +98,14 @@ const AdminDashboard: React.FC = () => {
     const loadData = async () => {
         setLoading(true);
         try {
-            const [items, cats] = await Promise.all([fetchMenuItems(), fetchCategories()]);
+            const [items, cats, subOrder] = await Promise.all([
+                fetchMenuItems(),
+                fetchCategories(),
+                fetchSubcategoryOrder()
+            ]);
             setMenuItems(items);
             setCategories(cats);
+            setSubcategoryOrder(subOrder);
 
             // Extract unique subcategories from items
             const subcategories = Array.from(
@@ -107,8 +114,17 @@ const AdminDashboard: React.FC = () => {
                         .map(item => item.subcategory)
                         .filter(sub => sub && sub.trim() !== '')
                 )
-            ).sort();
-            setExistingSubcategories(subcategories);
+            );
+
+            // Sort by custom order if available, otherwise alphabetically
+            const sortedSubcategories = subcategories.sort((a, b) => {
+                const orderA = subOrder.find(so => so.subcategory === a)?.display_order ?? 999;
+                const orderB = subOrder.find(so => so.subcategory === b)?.display_order ?? 999;
+                if (orderA !== orderB) return orderA - orderB;
+                return a.localeCompare(b);
+            });
+
+            setExistingSubcategories(sortedSubcategories);
         } catch (e) {
             showStatus('error', "Greška prilikom učitavanja podataka.");
         }
@@ -205,6 +221,59 @@ const AdminDashboard: React.FC = () => {
             showStatus('error', "Greška prilikom spremanja.");
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    // Handle reordering items via drag-and-drop
+    const handleReorderItems = async (reorderedItems: any[]) => {
+        try {
+            // Update local state immediately for smooth UX
+            setMenuItems(prevItems => {
+                const otherItems = prevItems.filter(item =>
+                    !reorderedItems.find(ri => ri.id === item.id)
+                );
+                return [...otherItems, ...reorderedItems];
+            });
+
+            // Prepare updates with new display_order values
+            const updates = reorderedItems.map((item, index) => ({
+                id: item.id,
+                display_order: index
+            }));
+
+            // Save to database
+            await updateItemsOrder(updates);
+
+            // Reload to ensure consistency
+            await loadData();
+        } catch (error) {
+            console.error('Error reordering items:', error);
+            showStatus('error', 'Greška prilikom promjene redoslijeda.');
+            // Reload on error to restore correct order
+            await loadData();
+        }
+    };
+
+    // Handle reordering subcategories via drag-and-drop
+    const handleReorderSubcategories = async (reorderedSubcategories: string[]) => {
+        try {
+            // Prepare updates with new display_order values
+            const updates = reorderedSubcategories.map((subcategory, index) => ({
+                subcategory,
+                display_order: index
+            }));
+
+            // Save to database
+            await updateSubcategoryOrder(updates);
+
+            // Reload to ensure consistency
+            await loadData();
+            showStatus('success', 'Redoslijed podkategorija sačuvan!');
+        } catch (error) {
+            console.error('Error reordering subcategories:', error);
+            showStatus('error', 'Greška prilikom promjene redoslijeda podkategorija.');
+            // Reload on error to restore correct order
+            await loadData();
         }
     };
 
@@ -428,7 +497,7 @@ const AdminDashboard: React.FC = () => {
                 {loading ? (
                     <div className="flex justify-center py-20"><Loader2 className="animate-spin text-gold-300" size={40} /></div>
                 ) : activeCategory === "Drinks" ? (
-                    // Drinks layout - grouped by subcategory
+                    // Drinks layout - grouped by subcategory with drag-and-drop
                     <div className="space-y-8">
                         {(() => {
                             // Group drinks by subcategory
@@ -441,71 +510,88 @@ const AdminDashboard: React.FC = () => {
                                 drinksBySubcategory[subcat].push(item);
                             });
 
-                            return Object.entries(drinksBySubcategory).map(([subcategory, items]) => (
-                                <div key={subcategory} className="space-y-4">
-                                    {/* Subcategory Header */}
-                                    <h3 className="text-xl font-serif text-gold-300 pb-2 border-b border-gold-300/20">
-                                        {subcategory}
-                                    </h3>
+                            // Get ordered subcategories
+                            const orderedSubcategories = Object.keys(drinksBySubcategory).sort((a, b) => {
+                                const orderA = subcategoryOrder.find(so => so.subcategory === a)?.display_order ?? 999;
+                                const orderB = subcategoryOrder.find(so => so.subcategory === b)?.display_order ?? 999;
+                                if (orderA !== orderB) return orderA - orderB;
+                                return a.localeCompare(b);
+                            });
 
-                                    {/* Items in this subcategory */}
-                                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                                        {items.map(item => {
-                                            const isInvisible = !isCategoryValid(item.category);
-                                            return (
-                                                <div
-                                                    key={item.id}
-                                                    className={`bg-white/5 border rounded-xl p-4 flex gap-4 items-start group transition-colors ${isInvisible
-                                                        ? 'border-red-500/30 opacity-60 hover:opacity-80'
-                                                        : 'border-white/10 hover:border-gold-300/30'
-                                                        }`}
-                                                >
-                                                    {/* No image for drinks */}
-                                                    <div className="flex-1 min-w-0">
-                                                        <div className="flex justify-between flex-col items-start mb-1">
-                                                            <div className="flex items-center gap-2 mb-1">
-                                                                <h4 className="font-serif text-lg text-white truncate pr-2 flex items-center gap-2">
-                                                                    {item.name.bs}
-                                                                    {item.isSignature && <Star size={14} className="text-gold-500 fill-gold-500" />}
-                                                                </h4>
+                            return (
+                                <SortableList
+                                    items={orderedSubcategories}
+                                    onReorder={handleReorderSubcategories}
+                                    getItemId={(subcat) => subcat}
+                                    renderItem={(subcategory) => (
+                                        <div className="space-y-4 mb-8">
+                                            {/* Subcategory Header */}
+                                            <h3 className="text-xl font-serif text-gold-300 pb-2 border-b border-gold-300/20">
+                                                {subcategory}
+                                            </h3>
+
+                                            {/* Items in this subcategory - with drag-and-drop */}
+                                            <SortableList
+                                                items={drinksBySubcategory[subcategory]}
+                                                onReorder={handleReorderItems}
+                                                getItemId={(item) => item.id}
+                                                renderItem={(item) => {
+                                                    const isInvisible = !isCategoryValid(item.category);
+                                                    return (
+                                                        <div
+                                                            className={`bg-white/5 border rounded-xl p-4 flex gap-4 items-start group transition-colors mb-4 ${isInvisible
+                                                                ? 'border-red-500/30 opacity-60 hover:opacity-80'
+                                                                : 'border-white/10 hover:border-gold-300/30'
+                                                                }`}
+                                                        >
+                                                            {/* No image for drinks */}
+                                                            <div className="flex-1 min-w-0">
+                                                                <div className="flex justify-between flex-col items-start mb-1">
+                                                                    <div className="flex items-center gap-2 mb-1">
+                                                                        <h4 className="font-serif text-lg text-white truncate pr-2 flex items-center gap-2">
+                                                                            {item.name.bs}
+                                                                            {item.isSignature && <Star size={14} className="text-gold-500 fill-gold-500" />}
+                                                                        </h4>
+                                                                    </div>
+                                                                    <span className="text-gold-300 font-bold text-sm bg-black-surface rounded">Cijena: {item.price} KM</span>
+                                                                </div>
+                                                                <p className="text-white/40 text-xs line-clamp-2 mb-1 h-4">{item.description.bs}</p>
+                                                                <p className="text-white/20 text-[10px] line-clamp-1 mb-3">{item.description.en}</p>
+                                                                {isInvisible && (
+                                                                    <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold rounded flex items-center gap-1" style={{ width: 'fit-content' }}>
+                                                                        <EyeOff size={10} />
+                                                                        NEVIDLJIVO
+                                                                    </span>
+                                                                )}
+                                                                {isInvisible && (
+                                                                    <p className="text-red-400/80 text-[10px] mb-2 mt-4 flex gap-1">
+                                                                        <AlertCircle size={10} className="text-red-400 mt-0.5" />
+                                                                        Kategorija "{item.category}" ne postoji. Potrebno je samo da dodate "{item.category}" kategoriju.
+                                                                    </p>
+                                                                )}
+                                                                <div className="flex gap-2">
+                                                                    <button
+                                                                        onClick={() => openEditItem(item)}
+                                                                        className="px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-1"
+                                                                    >
+                                                                        <Edit2 size={12} /> Uredi
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => handleDeleteItem(item.id)}
+                                                                        className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-1"
+                                                                    >
+                                                                        <Trash2 size={12} /> Obriši
+                                                                    </button>
+                                                                </div>
                                                             </div>
-                                                            <span className="text-gold-300 font-bold text-sm bg-black-surface rounded">Cijena: {item.price} KM</span>
                                                         </div>
-                                                        <p className="text-white/40 text-xs line-clamp-2 mb-1 h-4">{item.description.bs}</p>
-                                                        <p className="text-white/20 text-[10px] line-clamp-1 mb-3">{item.description.en}</p>
-                                                        {isInvisible && (
-                                                            <span className="px-2 py-0.5 bg-red-500/20 border border-red-500/40 text-red-400 text-[10px] font-bold rounded flex items-center gap-1" style={{ width: 'fit-content' }}>
-                                                                <EyeOff size={10} />
-                                                                NEVIDLJIVO
-                                                            </span>
-                                                        )}
-                                                        {isInvisible && (
-                                                            <p className="text-red-400/80 text-[10px] mb-2 mt-4 flex gap-1">
-                                                                <AlertCircle size={10} className="text-red-400 mt-0.5" />
-                                                                Kategorija "{item.category}" ne postoji. Potrebno je samo da dodate "{item.category}" kategoriju.
-                                                            </p>
-                                                        )}
-                                                        <div className="flex gap-2">
-                                                            <button
-                                                                onClick={() => openEditItem(item)}
-                                                                className="px-3 py-1.5 bg-blue-500/10 text-blue-400 border border-blue-500/20 rounded-lg text-xs font-bold hover:bg-blue-500 hover:text-white transition-all flex items-center gap-1"
-                                                            >
-                                                                <Edit2 size={12} /> Uredi
-                                                            </button>
-                                                            <button
-                                                                onClick={() => handleDeleteItem(item.id)}
-                                                                className="px-3 py-1.5 bg-red-500/10 text-red-400 border border-red-500/20 rounded-lg text-xs font-bold hover:bg-red-500 hover:text-white transition-all flex items-center gap-1"
-                                                            >
-                                                                <Trash2 size={12} /> Obriši
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                        })}
-                                    </div>
-                                </div>
-                            ));
+                                                    );
+                                                }}
+                                            />
+                                        </div>
+                                    )}
+                                />
+                            );
                         })()}
                     </div>
                 ) : (
@@ -572,8 +658,9 @@ const AdminDashboard: React.FC = () => {
                             );
                         })}
                     </div>
-                )}
-            </div>
+                )
+                }
+            </div >
 
             {/* --- Modals --- */}
 

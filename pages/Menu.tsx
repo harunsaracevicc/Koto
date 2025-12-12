@@ -3,7 +3,7 @@ import FadeIn from '../components/FadeIn';
 import { MENU_ITEMS as STATIC_MENU_ITEMS } from '../constants';
 import { useLanguage } from '../contexts/LanguageContext';
 import { formatPrice } from '../utils';
-import { fetchMenuItems, fetchCategories, Category } from '../lib/api';
+import { fetchMenuItems, fetchCategories, fetchSubcategoryOrder, Category, SubcategoryOrder } from '../lib/api';
 import { MenuItem } from '../types';
 
 const DEFAULT_CATEGORIES: Category[] = [
@@ -23,6 +23,7 @@ const Menu: React.FC = () => {
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [categories, setCategories] = useState<Category[]>(DEFAULT_CATEGORIES);
+  const [subcategoryOrder, setSubcategoryOrder] = useState<SubcategoryOrder[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,10 +32,13 @@ const Menu: React.FC = () => {
 
   const loadData = async () => {
     setLoading(true);
-    const [items, dbCategories] = await Promise.all([
+    const [items, dbCategories, subOrder] = await Promise.all([
       fetchMenuItems(),
-      fetchCategories()
+      fetchCategories(),
+      fetchSubcategoryOrder()
     ]);
+
+    setSubcategoryOrder(subOrder);
 
     if (items.length > 0) {
       setMenuItems(items);
@@ -109,7 +113,7 @@ const Menu: React.FC = () => {
             {(() => {
               // Group drinks by subcategory
               const drinksBySubcategory: Record<string, MenuItem[]> = {};
-              const subcategoryOrder = ["Gazirani sokovi", "Prirodni sokovi", "Topli napitci", "Vina", "Alkoholna pića"];
+              // Subcategory order comes from database state
 
               filteredItems.forEach(item => {
                 const subcat = item.subcategory || "Ostalo";
@@ -121,12 +125,10 @@ const Menu: React.FC = () => {
 
               // Sort subcategories by predefined order
               const sortedSubcategories = Object.keys(drinksBySubcategory).sort((a, b) => {
-                const indexA = subcategoryOrder.indexOf(a);
-                const indexB = subcategoryOrder.indexOf(b);
-                if (indexA === -1 && indexB === -1) return 0;
-                if (indexA === -1) return 1;
-                if (indexB === -1) return -1;
-                return indexA - indexB;
+                const orderA = subcategoryOrder.find(so => so.subcategory === a)?.display_order ?? 999;
+                const orderB = subcategoryOrder.find(so => so.subcategory === b)?.display_order ?? 999;
+                if (orderA !== orderB) return orderA - orderB;
+                return a.localeCompare(b);
               });
 
               return sortedSubcategories.map((subcategory, idx) => (
