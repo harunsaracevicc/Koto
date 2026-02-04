@@ -175,14 +175,14 @@ const Home: React.FC = () => {
                     {t('home.philosophyText')}
                   </p>
                   <div className="flex gap-12 pt-4">
-                    <div>
-                      <p className="text-4xl text-gold-300 font-serif"></p>
+                    {/* <div>
+                      <p className="text-4xl text-gold-300 font-serif">15+</p>
                       <p className="text-white/40 text-xs tracking-widest uppercase mt-2">{t('home.yearsExcellence')}</p>
                     </div>
                     <div>
                       <p className="text-4xl text-gold-300 font-serif">200+</p>
                       <p className="text-white/40 text-xs tracking-widest uppercase mt-2">{t('home.premiumWines')}</p>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
                 <button
