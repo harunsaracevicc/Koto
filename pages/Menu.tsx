@@ -7,6 +7,7 @@ import { fetchMenuItems, fetchCategories, fetchSubcategoryOrder, Category, Subca
 import { MenuItem } from '../types';
 
 const DEFAULT_CATEGORIES: Category[] = [
+  { id: -1, name: { en: "All", bs: "Sve" } },
   { id: -2, name: { en: "Starters", bs: "Predjela" } },
   { id: -3, name: { en: "Main Dishes", bs: "Glavna Jela" } },
   { id: -4, name: { en: "Pasta", bs: "Tjestenine" } },
@@ -17,7 +18,7 @@ const DEFAULT_CATEGORIES: Category[] = [
 ];
 
 const Menu: React.FC = () => {
-  const [activeCategory, setActiveCategory] = useState("All");
+  const [activeCategory, setActiveCategory] = useState("Glavna jela");
   const { t, language } = useLanguage();
 
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -44,6 +45,14 @@ const Menu: React.FC = () => {
     } else {
       // Strict DB mode: if empty, show empty. Do not fall back to constants.
       setMenuItems([]);
+    }
+
+    if (dbCategories.length > 0) {
+      // Ensure "All" is always first
+      setCategories([...dbCategories]);
+    } else {
+      // Strict DB mode: if empty, show only "All" selector.
+      setCategories([...dbCategories]);
     }
 
     setLoading(false);
