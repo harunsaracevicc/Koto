@@ -107,7 +107,7 @@ const Menu: React.FC = () => {
         </FadeIn>
 
         {/* Grid - Different layout for Drinks */}
-        {activeCategory === "Drinks" ? (
+        {activeCategory !== "" ? (
           // Drinks layout - simple list grouped by subcategory
           <div className="max-w-4xl mx-auto">
             {(() => {
@@ -116,7 +116,7 @@ const Menu: React.FC = () => {
               // Subcategory order comes from database state
 
               filteredItems.forEach(item => {
-                const subcat = item.subcategory || "Ostalo";
+                const subcat = item.subcategory || item.category;
                 if (!drinksBySubcategory[subcat]) {
                   drinksBySubcategory[subcat] = [];
                 }
