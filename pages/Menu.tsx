@@ -85,13 +85,13 @@ const Menu: React.FC = () => {
 
         {/* Categories (Filters) */}
         <FadeIn delay={0.2}>
-          <div className="flex justify-center flex-wrap gap-4 mb-16" role="group" aria-label="Menu Categories">
+          <div className="flex flex-wrap gap-4 mb-16" role="group" aria-label="Menu Categories">
             {categories.map((cat) => (
               <div key={cat.id || cat.name.en} className="relative group">
                 <button
                   onClick={() => setActiveCategory(cat.name.en)}
                   aria-pressed={activeCategory === cat.name.en}
-                  className={`px-6 py-2 transition-all duration-300 text-sm tracking-widest uppercase font-bold relative focus:outline-none focus:ring-2 focus:ring-gold-300 rounded-sm
+                  className={`px-2 py-2 transition-all duration-300 text-sm tracking-widest uppercase font-bold relative focus:outline-none focus:ring-2 focus:ring-gold-300 rounded-sm
                     ${activeCategory === cat.name.en
                       ? 'text-gold-300'
                       : 'text-white/50 hover:text-white'
