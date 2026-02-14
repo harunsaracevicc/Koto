@@ -94,7 +94,7 @@ export const translations = {
       philosophyTitle: "Naša Filozofija",
       philosophyHeading: "Tradicija Susreće",
       philosophyHeadingSuffix: "Moderni Luksuz",
-      philosophyText: "U Kotu spajamo tradicionalne bosanske okuse s modernim kulinarskim tehnikama kako bismo stvorili jedinstveno iskustvo objedovanja. Naša posvećenost svježim, lokalnim sastojcima je srž svakog jela koje služimo.",
+      philosophyText: "Dragi gosti, zahvaljujemo vam što ste izabrali da svoje vrijeme i uživanje provedete sa nama. Naša kuhinja spaja pažljivo birane satstojke, tradiciju i savremeni pristup, sa željom da vam svaki obrok pruži posebno iskustvo. Opustite se, uživajte u atmosferi i dozvolite nam da se pobrinemo za vas.",
       yearsExcellence: "",
       premiumWines: "Vrhunskih Vina",
       exploreMenu: "Istražite Meni",

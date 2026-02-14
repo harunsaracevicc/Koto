@@ -17,6 +17,22 @@ const DEFAULT_CATEGORIES: Category[] = [
   { id: -8, name: { en: "Drinks", bs: "Pića" } }
 ];
 
+const ORDERED_SUBCATEGORIES = [
+  "Doručak",
+  "Sendviči",
+  "Supe i čorbe",
+  "Predjela",
+  "Paste i rižota",
+  "Glavna jela",
+  "Obrok salate",
+  "Salate uz jelo",
+  "Domaće pecivo",
+  "Prilozi",
+  "Dječiji meni",
+  "Pizza",
+  "Deserti"
+];
+
 const Menu: React.FC = () => {
   const [activeCategory, setActiveCategory] = useState("Glavna jela");
   const { t, language } = useLanguage();
@@ -58,9 +74,8 @@ const Menu: React.FC = () => {
     setLoading(false);
   };
 
-  const filteredItems = activeCategory === "All"
-    ? menuItems.filter(item => item.category !== "Drinks")
-    : menuItems.filter(item => item.category === activeCategory);
+  // Show all items, grouped by subcategory
+  const filteredItems = menuItems;
 
   return (
     <div className="w-full pt-32 pb-20 min-h-screen bg-black-rich">
@@ -83,7 +98,7 @@ const Menu: React.FC = () => {
           </div>
         </FadeIn>
 
-        {/* Categories (Filters) */}
+        {/* Categories (Filters) - Commented out to show all items
         <FadeIn delay={0.2}>
           <div className="flex flex-wrap gap-4 mb-16" role="group" aria-label="Menu Categories">
             {categories.map((cat) => (
@@ -97,7 +112,6 @@ const Menu: React.FC = () => {
                       : 'text-white/50 hover:text-white'
                     }`}
                 >
-                  {/* Prioritize showing localized name, fallback to English */}
                   {cat.name[language] || t(`categories.${cat.name.en}`) || cat.name.en}
                   <span className={`absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-px bg-gold-300 transition-all duration-300 origin-center ${activeCategory === cat.name.en ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-50'}`} aria-hidden="true"></span>
                 </button>
@@ -105,6 +119,7 @@ const Menu: React.FC = () => {
             ))}
           </div>
         </FadeIn>
+        */}
 
         {/* Grid - Different layout for Drinks */}
         {activeCategory !== "" ? (
@@ -125,6 +140,19 @@ const Menu: React.FC = () => {
 
               // Sort subcategories by predefined order
               const sortedSubcategories = Object.keys(drinksBySubcategory).sort((a, b) => {
+                const indexA = ORDERED_SUBCATEGORIES.indexOf(a);
+                const indexB = ORDERED_SUBCATEGORIES.indexOf(b);
+
+                // If both are in the list, sort by index
+                if (indexA !== -1 && indexB !== -1) {
+                  return indexA - indexB;
+                }
+                
+                // If only A is in the list, it comes first
+                if (indexA !== -1) return -1;
+                // If only B is in the list, it comes first
+                if (indexB !== -1) return 1;
+
                 const orderA = subcategoryOrder.find(so => so.subcategory === a)?.display_order ?? 999;
                 const orderB = subcategoryOrder.find(so => so.subcategory === b)?.display_order ?? 999;
                 if (orderA !== orderB) return orderA - orderB;

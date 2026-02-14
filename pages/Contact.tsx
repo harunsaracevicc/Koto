@@ -34,7 +34,7 @@ const Contact: React.FC = () => {
                             {/* Phone */}
                             <div className="flex flex-col sm:flex-row gap-6 border-t border-white/10 py-8 group hover:border-gold-300/30 transition-colors">
                                 <div className="w-40 shrink-0 text-gold-300 font-serif text-lg">{t('contact.reservationsLabel')}</div>
-                                <a href="tel:+38761000000" className="text-white/80 font-light text-lg hover:text-white transition-colors focus:outline-none focus:text-gold-300">+387 61 000 000</a>
+                                <a href="tel:+38761000000" className="text-white/80 font-light text-lg hover:text-white transition-colors focus:outline-none focus:text-gold-300">033 860 333</a>
                             </div>
                             {/* Email */}
                             <div className="flex flex-col sm:flex-row gap-6 border-t border-white/10 py-8 group hover:border-gold-300/30 transition-colors">

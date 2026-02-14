@@ -26,7 +26,7 @@ const Footer: React.FC = () => {
             <h4 className="text-gold-200 font-serif text-lg">{t('footer.contact')}</h4>
             <ul className="flex flex-col gap-4 text-sm text-white/60 font-light">
               <li><a href="mailto:info@koto.ba" className="hover:text-gold-300 transition-colors border-b border-transparent hover:border-gold-300 pb-1" aria-label="Send email to info@koto.ba">info@koto.ba</a></li>
-              <li><a href="tel:+38761000000" className="hover:text-gold-300 transition-colors border-b border-transparent hover:border-gold-300 pb-1" aria-label="Call +387 61 000 000">+387 61 000 000</a></li>
+              <li><a href="tel:+38761000000" className="hover:text-gold-300 transition-colors border-b border-transparent hover:border-gold-300 pb-1" aria-label="Call 033 860 333">033 860 333</a></li>
               <li className="leading-relaxed">{t('contact.addressValue')}</li>
             </ul>
           </div>

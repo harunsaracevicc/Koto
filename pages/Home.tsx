@@ -201,7 +201,7 @@ const Home: React.FC = () => {
                   <div className="flex flex-col gap-4 mt-12">
                     <div className="w-full aspect-[4/5] overflow-hidden rounded border border-white/5 hover:border-gold-300/30 transition-colors duration-700">
                       <img
-                        src={ASSETS.PHILOSOPHY.INTERIOR}
+                        src="https://i.postimg.cc/j22rHSF0/DSC-1361-Pano.jpg"
                         alt="Fresh vegetables on a cutting board"
                         className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                       />
@@ -210,7 +210,7 @@ const Home: React.FC = () => {
                   <div className="flex flex-col gap-4">
                     <div className="w-full aspect-[4/5] overflow-hidden rounded border border-white/5 hover:border-gold-300/30 transition-colors duration-700">
                       <img
-                        src={ASSETS.PHILOSOPHY.INTERIOR2}
+                        src="https://i.postimg.cc/qRX7bqwB/DSC-0839.jpg"
                         alt="Elegant restaurant interior with warm lighting"
                         className="w-full h-full object-cover transition-transform duration-700 hover:scale-105"
                       />

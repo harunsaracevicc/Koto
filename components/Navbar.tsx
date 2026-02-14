@@ -89,9 +89,9 @@ const Navbar: React.FC = () => {
               </div>
             </div>
             <div className="flex items-center gap-4 md:gap-8">
-              <a href="tel:+38761000000" className="flex items-center gap-2 hover:text-gold-300 transition-colors text-white/80" aria-label="Call us at +387 61 000 000">
+              <a href="tel:+38761000000" className="flex items-center gap-2 hover:text-gold-300 transition-colors text-white/80" aria-label="Call us at 033 860 333">
                 <Phone size={12} className="text-gold-300" aria-hidden="true" />
-                <span>+387 61 000 000</span>
+                <span>033 860 333</span>
               </a>
             </div>
           </div>
@@ -143,20 +143,7 @@ const Navbar: React.FC = () => {
               {/* User Status */}
 
 
-              {/* Language Switcher */}
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center justify-center w-8 h-6 rounded-sm border border-white/10 hover:border-gold-300 overflow-hidden transition-all duration-300 shadow-lg focus:outline-none focus:ring-2 focus:ring-gold-300"
-                title={language === 'en' ? "Switch to Bosnian" : "Switch to English"}
-                aria-label={language === 'en' ? "Switch to Bosnian language" : "Switch to English language"}
-              >
-                <img
-                  src={language === 'en' ? ASSETS.FLAGS.EN : ASSETS.FLAGS.BS}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  aria-hidden="true"
-                />
-              </button>
+
 
               <button
                 onClick={() => navigate('/menu')}
@@ -169,18 +156,7 @@ const Navbar: React.FC = () => {
 
             {/* Mobile Actions */}
             <div className="md:hidden flex items-center gap-4">
-              <button
-                onClick={toggleLanguage}
-                className="flex items-center justify-center w-8 h-6 rounded-sm border border-white/10 overflow-hidden"
-                aria-label={language === 'en' ? "Switch to Bosnian language" : "Switch to English language"}
-              >
-                <img
-                  src={language === 'en' ? ASSETS.FLAGS.EN : ASSETS.FLAGS.BS}
-                  alt=""
-                  className="w-full h-full object-cover"
-                  aria-hidden="true"
-                />
-              </button>
+
               <button
                 className="text-gold-200 p-2 hover:text-white transition-colors focus:outline-none focus:ring-1 focus:ring-gold-300 rounded"
                 onClick={() => setIsOpen(!isOpen)}
@@ -246,7 +222,7 @@ const Navbar: React.FC = () => {
               <div className="flex flex-col items-center gap-4">
                 <a href="tel:+38761000000" className="flex items-center gap-3 text-gold-300 font-sans tracking-widest">
                   <Phone size={16} aria-hidden="true" />
-                  <span>+387 61 000 000</span>
+                  <span>033 860 333</span>
                 </a>
               </div>
             </div>
